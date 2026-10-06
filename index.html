@@ -864,6 +864,13 @@ body.phome{height:var(--vh0,100dvh)}
 .fpx{position:sticky;top:-2px;z-index:3;display:block;margin:-4px -2px 4px auto;width:26px;height:26px;padding:0;border:2px solid var(--accent-d);border-radius:50%;background:var(--panel);color:var(--accent-d);font-size:17px;line-height:1;cursor:pointer}
 body.fpo .app,body.fpo .app *{pointer-events:none!important}
 body.fpo .fpop:not([hidden]),body.fpo .fpop:not([hidden]) *{pointer-events:auto!important}
+
+/* ---- 추가: 친구 추가 창 닫기 버튼은 돋보기 오른쪽 / 폰 먼슬리는 할 일들 아래에 날짜 미정 ---- */
+.fpx.fpx-in{position:static;flex:none;width:28px;height:auto;margin:0;border-width:1px;border-radius:8px;font-size:16px;z-index:auto}
+@media(max-width:820px){
+ .under{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:12px}
+ .under .ahead,.under .inbox{flex:none;width:100%;max-width:100%;min-width:0;margin:0}
+}
 </style>
 </head>
 <body>
@@ -1763,7 +1770,7 @@ function frLoadL(){Promise.all([API("list_friends"),API("list_requests"),API("li
 
 /* ---------- 친구 추가 팝업 ---------- */
 var FPX='<button type="button" class="fpx" aria-label="창 닫기">\u00d7</button>';
-function frRenderATop(){var p=$("fpopA");p.innerHTML=FPX+'<form class="fp-s" id="fpf" autocomplete="off"><input id="fpc" type="text" placeholder="친구 코드 입력" maxlength="12" aria-label="친구 코드" spellcheck="false"><button type="submit" class="fp-go" aria-label="검색">'+MAG+'</button></form><div class="fp-tg" id="fpTg"></div><div id="fpres"></div><div id="fpbody"></div>';frRenderTg()}
+function frRenderATop(){var p=$("fpopA");p.innerHTML='<form class="fp-s" id="fpf" autocomplete="off"><input id="fpc" type="text" placeholder="친구 코드 입력" maxlength="12" aria-label="친구 코드" spellcheck="false"><button type="submit" class="fp-go" aria-label="검색">'+MAG+'</button><button type="button" class="fpx fpx-in" aria-label="창 닫기">\u00d7</button></form><div class="fp-tg" id="fpTg"></div><div id="fpres"></div><div id="fpbody"></div>';frRenderTg()}
 function frRenderTg(){var t=$("fpTg");if(!t)return;t.innerHTML='<button type="button" data-act="share" data-sh="share_weekly" aria-pressed="'+MY.share_weekly+'">위클리 '+(MY.share_weekly?"공개":"비공개")+'</button><button type="button" data-act="share" data-sh="share_monthly" aria-pressed="'+MY.share_monthly+'">먼슬리 '+(MY.share_monthly?"공개":"비공개")+'</button>'}
 function frRow(u,right,face){return '<div class="fp-row"><button type="button" class="fp-face" data-act="visit" data-id="'+E(u.id)+'" aria-label="'+frNm(u)+'의 미니홈피">'+frFace(u.pub)+'</button><span class="fp-nm">'+frNm(u)+'</span>'+right+'</div>'}
 function frRenderRes(){var r=$("fpres");if(!r)return;var f=FRS.found;if(!f){r.innerHTML=FRS.msg?'<div class="fp-msg">'+E(FRS.msg)+'</div>':"";return}
