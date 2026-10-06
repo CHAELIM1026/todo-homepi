@@ -1142,7 +1142,7 @@ function renderDd(){var y=ddView.getFullYear(),m=ddView.getMonth(),f=new Date(y,
 function ddAlign(){var dd=document.querySelector(".dw.hw"),bio=document.querySelector(".bio"),pf=$("pf");if(!dd||!bio||!pf)return;dd.style.width="";dd.style.marginLeft="";
  if(!(window.matchMedia&&window.matchMedia("(min-width:821px)").matches)||!dd.closest(".pf"))return;
  var nm=$("pddl"),dw=dd.querySelector(".ddw"),mx=parseFloat(getComputedStyle(nm).maxWidth)||120,gp=parseFloat(getComputedStyle(dd).columnGap)||6,tot=Math.round(dw.offsetWidth+gp+mx);
- dd.style.width=tot+"px";dd.style.marginLeft=Math.round(bio.getBoundingClientRect().right-pf.getBoundingClientRect().left-tot)+"px"}
+ dd.style.width=tot+"px";dd.style.marginLeft=Math.max(0,Math.round(bio.getBoundingClientRect().right-pf.getBoundingClientRect().left-tot))+"px"}
 function fitAll(){fit($("pname"));fit($("pbio"));fit($("pddl"));ddAlign();if(typeof wxLay==="function")wxLay()}
 function renderDeco(){
  var NT='<svg class="nt" viewBox="0 0 10 12" width="9" height="11" aria-hidden="true"><path d="M3 9.5V1.5l6-1.2V8" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="2.2" cy="9.6" r="1.8" fill="currentColor"/><circle cx="8" cy="8.2" r="1.8" fill="currentColor"/></svg>';$("mq").firstChild.innerHTML=prof.song?NT+esc(prof.song)+NT:"좋아하는 노래를 적어보세요";
