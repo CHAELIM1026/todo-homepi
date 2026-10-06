@@ -1128,10 +1128,15 @@ $("picf").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileRea
 renderProf();
 var QS=["오늘의 작은 한 걸음이 내일의 큰 길이 돼요.","천천히 가도 괜찮아요, 멈추지만 않으면.","할 일이 쌓여도 한 칸씩, 한 잎씩.","좋은 하루는 작은 체크에서 시작돼요.","지금의 나에게 따뜻한 말 한마디.","구름이 지나가면 다시 하늘이 보여요.","오늘도 클로버 한 잎 채워봐요.","쉬는 것도 오늘의 할 일이에요."];
 var meas=document.createElement("span");meas.style.cssText="position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:0";document.body.appendChild(meas);
+var bioComp=false;
+function bioClamp(el){if(bioComp)return;
+ if(el.scrollHeight>el.clientHeight+1){
+  if(el._pv!==undefined&&el._pv!==el.value){var c=el._pc||0;el.value=el._pv;try{el.setSelectionRange(c,c)}catch(e){}prof.bio=el.value;saveProf()}
+ }else{el._pv=el.value;try{el._pc=el.selectionStart}catch(e){}}}
 function fit(el){var c=getComputedStyle(el);meas.style.fontSize=c.fontSize;meas.style.fontFamily=c.fontFamily;meas.style.fontWeight=c.fontWeight;meas.style.letterSpacing=c.letterSpacing;
  var px=parseFloat(c.paddingLeft)+parseFloat(c.paddingRight)+parseFloat(c.borderLeftWidth)+parseFloat(c.borderRightWidth);
  var host=el.closest?el.closest(".pf"):null,cap=host&&host.clientWidth>0?host.clientWidth:9999;
- if(el.tagName==="TEXTAREA"){var dk=window.matchMedia&&window.matchMedia("(min-width:821px)").matches;meas.textContent="가";var cw1=Math.ceil(meas.offsetWidth);var maxw=Math.min(dk?220-cw1:220,cap);BIOW=maxw;el.maxLength=dk?28:30,ls=(el.value||el.placeholder).split("\n"),mw=0,iw=maxw-px-8;ls.forEach(function(t){meas.textContent=t||" ";mw=Math.max(mw,Math.ceil(meas.offsetWidth))});el.style.width=Math.min(mw+px+8,maxw)+"px";el.style.height="38px"}
+ if(el.tagName==="TEXTAREA"){var dk=window.matchMedia&&window.matchMedia("(min-width:821px)").matches;meas.textContent="가";var cw1=Math.ceil(meas.offsetWidth);var maxw=Math.min(dk?220-cw1:220,cap);BIOW=maxw;el.maxLength=100,ls=(el.value||el.placeholder).split("\n"),mw=0,iw=maxw-px-8;ls.forEach(function(t){meas.textContent=t||" ";mw=Math.max(mw,Math.ceil(meas.offsetWidth))});el.style.width=Math.min(mw+px+8,maxw)+"px";el.style.height="38px";bioClamp(el)}
  else{meas.textContent=el.value||el.placeholder;el.style.width=Math.min(Math.ceil(meas.offsetWidth)+px+8,el.id==="pname"?cap-96:cap)+"px"}}
 var ddView=null;
 function openDd(){var d0=prof.ddate?parse(prof.ddate):new Date();ddView=new Date(d0.getFullYear(),d0.getMonth(),1);$("ddcal").hidden=false;renderDd()}
@@ -1141,8 +1146,8 @@ function renderDd(){var y=ddView.getFullYear(),m=ddView.getMonth(),f=new Date(y,
  $("ddcal").innerHTML=h+'</div><div class="ddf"><button type="button" data-ddclr="1">지우기</button><button type="button" data-ddx="1">닫기</button></div>'}
 function ddAlign(){var dd=document.querySelector(".dw.hw"),bio=document.querySelector(".bio"),pf=$("pf");if(!dd||!bio||!pf)return;dd.style.width="";dd.style.marginLeft="";
  if(!(window.matchMedia&&window.matchMedia("(min-width:821px)").matches)||!dd.closest(".pf"))return;
- var nm=$("pddl"),dw=dd.querySelector(".ddw"),mx=parseFloat(getComputedStyle(nm).maxWidth)||120,gp=parseFloat(getComputedStyle(dd).columnGap)||6,tot=Math.round(dw.offsetWidth+gp+mx);
- dd.style.width=tot+"px";dd.style.marginLeft=Math.max(0,Math.round(bio.getBoundingClientRect().right-pf.getBoundingClientRect().left-tot))+"px"}
+ var pen=bio.querySelector(".pen"),br=bio.getBoundingClientRect(),pr=pen?pen.getBoundingClientRect().right:br.left+16,tot=dd.getBoundingClientRect().width,pl=pf.getBoundingClientRect().left;
+ dd.style.marginLeft=Math.max(0,Math.round((pr+br.right)/2-tot/2-pl))+"px"}
 function fitAll(){fit($("pname"));fit($("pbio"));fit($("pddl"));ddAlign();if(typeof wxLay==="function")wxLay()}
 function renderDeco(){
  var NT='<svg class="nt" viewBox="0 0 10 12" width="9" height="11" aria-hidden="true"><path d="M3 9.5V1.5l6-1.2V8" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="2.2" cy="9.6" r="1.8" fill="currentColor"/><circle cx="8" cy="8.2" r="1.8" fill="currentColor"/></svg>';$("mq").firstChild.innerHTML=prof.song?NT+esc(prof.song)+NT:"좋아하는 노래를 적어보세요";
@@ -1520,7 +1525,7 @@ if(CB){$("cback").onclick=toBox;$("chome").onclick=toHome;
  function reSnap(){boxLay();if(deskOn()&&inBox&&!wlk)boxSnap()}
  boxMode();
  if(DM){if(DM.addEventListener)DM.addEventListener("change",boxMode);else if(DM.addListener)DM.addListener(boxMode)}
- $("pbio").addEventListener("input",function(){fit(this);ddAlign()});window.addEventListener("resize",function(){fitAll();boxLay();reSnap()});window.addEventListener("load",reSnap);
+ $("pbio").addEventListener("input",function(){fit(this);ddAlign()});$("pddl").addEventListener("input",function(){ddAlign()});$("pbio").addEventListener("compositionstart",function(){bioComp=true});$("pbio").addEventListener("compositionend",function(){bioComp=false;fit(this);ddAlign()});window.addEventListener("resize",function(){fitAll();boxLay();reSnap()});window.addEventListener("load",reSnap);
  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(reSnap);
  if(window.ResizeObserver){var ro2=new ResizeObserver(reSnap);ro2.observe(document.querySelector(".skin-body"))}
  setInterval(cbSync,250)}
