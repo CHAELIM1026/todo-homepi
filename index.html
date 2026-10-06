@@ -871,6 +871,9 @@ body.fpo .fpop:not([hidden]),body.fpo .fpop:not([hidden]) *{pointer-events:auto!
  .under{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:12px}
  .under .ahead,.under .inbox{flex:none;width:100%;max-width:100%;min-width:0;margin:0}
 }
+
+/* ---- 추가: 친구 화면 우표도장 자리 ---- */
+.fv .picw{margin-right:24px}
 </style>
 </head>
 <body>
@@ -939,6 +942,7 @@ if(!tasks){tasks=[
  {id:4,title:"언젠가 읽을 책 목록 만들기",date:"",time:"",done:false}];}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){}}
 var view="month",cursor=new Date(),sel=todayStr,addingSub=null,resched=null,upOpen=false,lateOpen=false;
+(function(){try{var v=sessionStorage.getItem("tdh_sel");if(v&&/^\d{4}-\d{2}-\d{2}$/.test(v)){sel=v;var d0=parse(v);cursor=new Date(d0.getFullYear(),d0.getMonth(),1)}}catch(e){}})();
 $("date").value=sel;
 
 function byDate(a,b){return a.date<b.date?-1:a.date>b.date?1:0}
@@ -1052,12 +1056,16 @@ function renderCal(){
  $("ttl").textContent=cursor.getFullYear()+"년 "+(cursor.getMonth()+1)+"월";
  $("cal").innerHTML=h+'</div>';
 }
-function render(){renderGoal();renderWeek();renderSide();renderCal();renderInbox();renderAhead();renderReceipt();renderQuote();renderStats();$("date").value=sel;var f=document.querySelector(".subf input");if(f)f.focus()}
+function render(){try{sessionStorage.setItem("tdh_sel",sel)}catch(e){}renderGoal();renderWeek();renderSide();renderCal();renderInbox();renderAhead();renderReceipt();renderQuote();renderStats();$("date").value=sel;var f=document.querySelector(".subf input");if(f)f.focus()}
 function find(id){return tasks.filter(function(t){return t.id==id})[0]}
 function sync(t){if(t&&t.subs&&t.subs.length)t.done=t.subs.every(function(s){return s.done})}
 function toggle(id){var t=find(id);if(t)t.done=!t.done;save();render();if(t&&t.done)roomWalk()}
 function move(id,dir){var t=find(id),g=grp(t.date),o=g[g.indexOf(t)+dir];if(!o||!o.done!==!t.done)return;var a=tasks.indexOf(t),b=tasks.indexOf(o);tasks[a]=o;tasks[b]=t;save();render()}
-function setDate(id,s){var t=find(id);if(t)t.date=s;resched=null;save();render()}
+function setDate(id,s){var t=find(id);
+ if(t&&t.date!==s){var sb=t.subs||[],dn=sb.filter(function(x){return x.done}),un=sb.filter(function(x){return !x.done});
+  if(t.date&&dn.length&&un.length){var nt={id:Date.now(),title:t.title,date:s,time:t.time||"",done:false,subs:un};t.subs=dn;sync(t);tasks.splice(tasks.indexOf(t)+1,0,nt)}
+  else t.date=s}
+ resched=null;save();render()}
 function stepM(n){cursor=new Date(cursor.getFullYear(),cursor.getMonth()+n,1);render()}
 function stepW(n){sel=fmt(addDays(parse(sel),7*n));var d=parse(sel);cursor=new Date(d.getFullYear(),d.getMonth(),1);render()}
 function goToday(){cursor=new Date();sel=todayStr;render()}
@@ -1813,6 +1821,7 @@ document.addEventListener("click",function(e){if(!document.contains(e.target))re
 $("pwx").addEventListener("click",function(){frPops()});
 
 /* ---------- 친구 미니홈피 보기 (읽기 전용) ---------- */
+function stampSvg(){return '<svg class="pmark" viewBox="0 0 70 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 12q3.5-4 7 0t7 0t7 0"/><path d="M1 20q3.5-4 7 0t7 0t7 0"/><path d="M1 28q3.5-4 7 0t7 0t7 0"/><circle cx="46" cy="22" r="17"/><circle cx="46" cy="22" r="13.5" stroke-width="1"/></g><text x="46" y="19" text-anchor="middle" font-size="7" font-weight="700" fill="currentColor">MY HOME</text><text x="46" y="30" text-anchor="middle" font-size="8" font-weight="700" fill="currentColor">'+todayStr.slice(5).replace("-",".")+'</text></svg>'}
 function frTheme(el,p){var i=p&&p.theme>=0&&p.theme<THEMES.length?p.theme:0,t=THEMES[i],H=TH[i][0],K=TH[i][1],st=el.style;st.setProperty("--accent",t[1]);st.setProperty("--g1",t[1]);st.setProperty("--accent-d",t[2]);st.setProperty("--accent-ink",t[3]);st.setProperty("--g2",t[4]);st.setProperty("--hue",H);st.setProperty("--k",K);st.setProperty("--ink","hsl("+H+" calc(33% * "+K+") 44%)");st.setProperty("--mute","hsl("+H+" calc(28% * "+K+") 60%)");st.setProperty("--done","hsl("+H+" calc(24% * "+K+") 82%)")}
 function frOpenFV(id){API("friend_view",{p_id:id}).then(function(r){if(!r){frToast("미니홈피를 열 수 없어요");return}if(FV&&FV.fx)cancelAnimationFrame(FV.fx);FV={id:id,d:r,tab:"",wk:wkStart(todayStr),mo:new Date(),sel:todayStr,fx:0};frRenderFV()}).catch(function(){frToast("미니홈피를 불러오지 못했어요")})}
 function frDday(p){if(!p.ddate)return"";var n=Math.round((parse(p.ddate)-parse(todayStr))/864e5);return (n>0?"D-"+n:n===0?"D-DAY":"D+"+(-n))+(p.dlabel?" · "+E(p.dlabel):"")}
@@ -1829,7 +1838,7 @@ function frFx(box,k){var c=box.querySelector(".fvfx"),pts=[],last=0,red=window.m
 function frRenderFV(){var f=$("fv"),d=FV.d,p=d.pub||{},nm=E(d.name||p.name||"이름 없음");
  var more='<button type="button" data-fa="'+(d.friend?"rmf":"addf")+'">'+(d.friend?"친구 삭제":"친구 추가")+'</button><button type="button" data-fa="blk">차단하기</button><button type="button" data-fa="rep">신고하기</button>';
  f.innerHTML='<div class="fv-skin" id="fvSkin"><div class="fv-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>'+nm+'의 미니 홈피</span><button type="button" class="gbb" data-fa="gb">방명록</button>'+(FV.preview?"":'<button type="button" class="fv-ic fv-r" data-fa="more" aria-label="더보기">⋯</button>')+'<button type="button" class="fv-ic'+(FV.preview?" fv-r":"")+'" data-fa="x" aria-label="닫기">✕</button></div>'+(FV.preview?'<div class="fv-pv">👀 미리보기 · 친구가 내 미니홈피를 볼 때 이렇게 보여요 (위클리·먼슬리는 공개 설정에 따라 보여요)</div>':'<div class="fv-more" id="fvMore" hidden>'+more+'</div>')
-  +'<div class="fv-body"><div class="fv-top"><div class="picw"><div class="pic'+(p.photo?" has":"")+'" style="'+(p.photo?"background-image:url('"+p.photo+"');":"")+'cursor:default">'+(p.photo?"":"사진 없음")+'</div>'+(p.photo?'<div class="pic2" style="background-image:url(\''+p.photo+'\')"></div>':"")+'</div><div class="fv-prof"><div class="fv-nrow"><span class="fv-name">'+nm+'</span>'+frLikeHtml()+'</div><div class="fv-bio" id="fvBio">'+E(p.bio||"")+'</div><div class="fv-meta">'+(p.ddate?'<span class="fv-dd">'+frDday(p)+'</span>':"")+(p.mood?'<span>'+E(p.mood)+'</span>':"")+(p.song?'<span class="fv-song">♪ '+E(p.song)+'</span>':"")+'</div></div></div><div class="fv-roomw" id="fvRoom"></div></div>'
+  +'<div class="fv-body"><div class="fv-top"><div class="picw"><div class="pic'+(p.photo?" has":"")+'" style="'+(p.photo?"background-image:url('"+p.photo+"');":"")+'cursor:default">'+(p.photo?"":"사진 없음")+'</div>'+stampSvg()+(p.photo?'<div class="pic2" style="background-image:url(\''+p.photo+'\')"></div>':"")+'</div><div class="fv-prof"><div class="fv-nrow"><span class="fv-name">'+nm+'</span>'+frLikeHtml()+'</div><div class="fv-bio" id="fvBio">'+E(p.bio||"")+'</div><div class="fv-meta">'+(p.ddate?'<span class="fv-dd">'+frDday(p)+'</span>':"")+(p.mood?'<span>'+E(p.mood)+'</span>':"")+(p.song?'<span class="fv-song">♪ '+E(p.song)+'</span>':"")+'</div></div></div><div class="fv-roomw" id="fvRoom"></div></div>'
   +'<div class="fv-tabs"><button type="button" data-fa="tab-w" aria-pressed="'+(FV.tab==="w")+'">위클리</button><button type="button" data-fa="tab-m" aria-pressed="'+(FV.tab==="m")+'">먼슬리</button></div><div class="fv-panel" id="fvPanel"></div></div>';
  f.hidden=false;document.body.style.overflow="hidden";var sk=$("fvSkin");frTheme(sk,p);$("fvBio").style.fontFamily=getComputedStyle($("pbio")).fontFamily;frMountRoom($("fvRoom"),p);frRenderPanel()}
 function frCloseFV(){if(FV&&FV.fx)cancelAnimationFrame(FV.fx);FV=null;$("fv").hidden=true;$("fv").innerHTML="";document.body.style.overflow=!$("gbv").hidden?"hidden":""}
@@ -2131,6 +2140,15 @@ window.addEventListener("pageshow",function(){if($("app").dataset.tab==="home")r
 /* ---- 친구 추가/친구 목록 창이 열려 있으면 미니홈피의 다른 요소는 반응하지 않음 ---- */
 function fpSync(){var open=!$("fpopA").hidden||!$("fpopL").hidden,tr=$("tour"),tOn=tr&&!tr.hidden;document.body.classList.toggle("fpo",!!(open&&!tOn))}
 ["fpopA","fpopL","tour"].forEach(function(id){var el=$(id);if(el)new MutationObserver(fpSync).observe(el,{attributes:true,attributeFilter:["hidden"]})});
+
+/* ---- 세부항목 추가 입력창: 비어 있는데 다른 곳을 누르면 닫기 ---- */
+var subBefore=null;
+document.addEventListener("click",function(){subBefore=addingSub},true);
+document.addEventListener("click",function(e){
+ if(addingSub==null||addingSub!==subBefore)return;
+ var f=document.querySelector(".subf");if(!f||f.contains(e.target))return;
+ var i=f.querySelector("input");if(i&&i.value.trim()!=="")return;
+ addingSub=null;render()});
 
 render();
 })();
