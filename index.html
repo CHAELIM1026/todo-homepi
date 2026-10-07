@@ -897,7 +897,7 @@ body.fpo .fpop:not([hidden]),body.fpo .fpop:not([hidden]) *{pointer-events:auto!
 /* ---- 컴퓨터 먼슬리: 영수증·날짜 미정 상자를 크게 (가로 240px 동일, 세로 = 먼슬리 칸 높이 126px의 두 배) ---- */
 @media(min-width:821px){
 .under{align-items:flex-start}
-.rs-month{width:240px;height:252px}
+.rs-month{width:200px;height:252px}
 .rs-month .rcpt{height:252px;font-size:12.5px;padding:12px 14px 14px}
 .rs-month .rl{flex:1 1 0;min-height:0;max-height:none;overflow-y:auto}
 .under .inbox{width:240px;height:252px;box-sizing:border-box;display:flex;flex-direction:column}
@@ -1153,7 +1153,7 @@ document.addEventListener("click",function(e){
  if(x=q("data-ie")){editing="i:"+x.dataset.ie;editDraft=null;render();var e3=document.querySelector(".tef input");if(e3){e3.focus();try{e3.setSelectionRange(e3.value.length,e3.value.length)}catch(_){}}return}
  if(x=q("data-tecancel")){editing=null;editDraft=null;render();return}
  if(x=q("data-ds")){var a=subOf(x.dataset.ds);a.t.subs=(a.t.subs||[]).filter(function(s){return s.id!=a.id});sync(a.t);save();render();return}
- if(x=q("data-ts")){var b=subOf(x.dataset.ts);(b.t.subs||[]).forEach(function(s){if(s.id==b.id)s.done=!s.done});sync(b.t);save();render();return}
+ if(x=q("data-ts")){var b=subOf(x.dataset.ts);(b.t.subs||[]).forEach(function(s){if(s.id==b.id)s.done=!s.done});var sd=(b.t.subs||[]).some(function(s){return s.id==b.id&&s.done});sync(b.t);save();render();if(sd)roomWalk();return}
  if(x=q("data-t")){toggle(x.dataset.t);return}
  if(x=q("data-c")){toggle(x.dataset.c);return}
  if(x=q("data-up")){move(x.dataset.up,-1);return}
@@ -1591,8 +1591,8 @@ function toBox(){if(wlk||inBox||!deskOn())return;if(shopK||atShop){goHome(functi
 function toHome(){if(wlk||!inBox||!deskOn())return;breakOut(function(){wlk=0;cbSync()},true)}
 function spotsWalk(done){var W=$("wk2"),spots=[[2.2,1.6],[1.6,3.4],[4.6,3.8],[4.4,2.2]].sort(function(){return Math.random()-.5}).slice(0,3).concat([HOME]),i=0,last=HOME;
  wm(true);
- (function go(){if(i>=spots.length){wm(false);if(done)done();return}var g=spots[i++];W.style.setProperty("--f",(g[0]-g[1])<(last[0]-last[1])?-1:1);place(g);last=g;setTimeout(go,950)})()}
-function roomWalk(){if(wlk||shopK||atShop)return;
+ (function go(){if(i>=spots.length){wm(false);if(done)done();return}var g=spots[i++];var fl=(g[0]-g[1])<(last[0]-last[1])?-1:1;W.style.setProperty("--f",fl);$("wk3").style.setProperty("--f",fl);place(g);last=g;setTimeout(go,950)})()}
+function roomWalk(){if(wlk)return;if(shopK||atShop){goHome(function(){roomWalk()});return}
  if(deskOn()&&inBox){breakOut(function(){spotsWalk(function(){backIn()})});return}
  wlk=1;spotsWalk(function(){wlk=0})}
 if(CB){$("cback").onclick=toBox;$("chome").onclick=toHome;
