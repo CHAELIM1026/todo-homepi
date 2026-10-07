@@ -874,6 +874,12 @@ body.fpo .fpop:not([hidden]),body.fpo .fpop:not([hidden]) *{pointer-events:auto!
 
 /* ---- 추가: 친구 화면 우표도장 자리 ---- */
 .fv .picw{margin-right:24px}
+
+/* ---- 추가: 상점 - 이미 산 품목 표시와 절취선 ---- */
+.own-cut{flex:0 0 100%;display:flex;align-items:center;gap:8px;margin:6px 0 2px;font-size:11px;font-weight:700;color:var(--accent-d)}
+.own-cut::before,.own-cut::after{content:"";flex:1;border-top:2px dashed var(--accent-d);opacity:.55}
+.it.own{background:color-mix(in srgb,var(--panel) 70%,var(--accent) 30%)}
+.it .ownck{position:absolute;right:-4px;top:-4px;width:15px;height:15px;border-radius:50%;background:var(--accent-d);color:#fff;font-size:10px;font-weight:700;line-height:15px;text-align:center;pointer-events:none}
 </style>
 </head>
 <body>
@@ -2082,13 +2088,34 @@ var _gh=goHome;goHome=function(cb){frRevert();return _gh(cb)};
 var _gs=goShop;goShop=function(k){frRevert();return _gs(k)};
 var _renderShop=renderShop;
 renderShop=function(){_renderShop();frShopUi()};
-function frShopUi(){var p=$("shopp");if(!p||p.hidden)return;var m=smode[shopK],k=shopK,pr=0;
+/* ---------- 상점: 이미 산 것은 ✓ 표시 + 절취선 아래로 ---------- */
+function frMarkOwned(){var p=$("shopp"),g=p&&p.querySelector(".grid4");if(!g)return;if(g.querySelector(".own-cut"))return;
+ var k=shopK,m=smode[k],its=[].slice.call(g.querySelectorAll(".it"));if(!its.length)return;
+ var ow=frOwn(),b=prof.sb,base=frSlots(b||prof),bf=b?b.furn:placed();
+ function own(it){var key=it.dataset.pick;if(key==null)return null;
+  if(k==="furn")return ow.fu.indexOf(key)>=0||bf.indexOf(key)>=0;
+  var idx,v;
+  if(k==="cloth"&&m==="design"){idx=0;v=+key.slice(1)}
+  else if(k==="cloth"&&m==="face"){idx=1;v=+key.slice(2)}
+  else if(k==="cloth"&&m==="pose"){idx=2;v=+key.slice(1)}
+  else if(k==="hair"&&m==="style"){idx=3;v=+key.slice(1)}
+  else if(k==="wall"&&m==="ws"){idx=4;v=+key.slice(2)}
+  else if(k==="wall"&&m==="fs"){idx=5;v=+key.slice(2)}
+  else return null;
+  return ow[OWNK[idx]].indexOf(v)>=0||base[idx]===v}
+ var mine=[],rest=[];
+ for(var i=0;i<its.length;i++){var o=own(its[i]);if(o===null)return;(o?mine:rest).push(its[i])}
+ if(!rest.length||!mine.length)return;
+ rest.forEach(function(it){g.appendChild(it)});
+ var cut=document.createElement("div");cut.className="own-cut";cut.setAttribute("role","separator");cut.innerHTML='<span>\u2702 \uc774\ubbf8 \uc0b0 \uac83</span>';g.appendChild(cut);
+ mine.forEach(function(it){it.classList.add("own");var c=document.createElement("span");c.className="ownck";c.textContent="\u2713";c.setAttribute("aria-hidden","true");it.appendChild(c);it.title=(it.title||"")+" (이미 산 것)";g.appendChild(it)})}
+function frShopUi(){var p=$("shopp");if(!p||p.hidden)return;frMarkOwned();var m=smode[shopK],k=shopK,pr=0;
  if(k==="cloth"&&m==="design")pr=3;else if(k==="cloth"&&(m==="face"||m==="pose"))pr=5;else if(k==="hair"&&m==="style")pr=6;else if(k==="wall"&&(m==="ws"||m==="fs"))pr=10;else if(k==="furn"&&(m==="add"||pend))pr=10;
  var h=p.querySelector("h4");
  if(h&&!p.querySelector(".shop-coin")){var d=document.createElement("div");d.className="shop-coin";d.innerHTML='<i class="coin-i"></i><b>'+cn().n+'</b><span class="lbl">보유</span>'+(frFree()?'<span class="free">튜토리얼 무료!</span>':"");h.insertAdjacentElement("afterend",d)}
  var tot=frTotal(),done=p.querySelector(".sdone");
  var pa=document.createElement("div");pa.className="shop-price";
- pa.innerHTML='<span class="sp-l">'+(pr?'눌러서 입어 보세요 · 1개 <i class="coin-i sm"></i><b>'+pr+'</b> <span class="own">(산 건 계속 무료)</span>':'색 변경·가구 이동은 무료예요')+'</span><span class="sp-r">'+(tot>0?'입어 보는 중 · 합계 <i class="coin-i sm"></i><b>'+tot+'</b>':"")+'</span>';
+ pa.innerHTML='<span class="sp-l">'+(pr?'눌러서 입어 보세요 · 1개 <i class="coin-i sm"></i><b>'+pr+'</b> <span class="own">(영구 구매)</span>':'색 변경·가구 이동은 무료예요')+'</span><span class="sp-r">'+(tot>0?'입어 보는 중 · 합계 <i class="coin-i sm"></i><b>'+tot+'</b>':"")+'</span>';
  if(done){done.insertAdjacentElement("beforebegin",pa);var bb=document.createElement("button");bb.type="button";bb.className="sbuy";bb.setAttribute("data-sbuy","1");bb.disabled=tot<=0;bb.innerHTML='구매'+(tot>0?' <i class="coin-i sm"></i>'+tot:"");done.insertAdjacentElement("afterend",bb)}}
 $("shopp").addEventListener("click",function(e){var b=e.target.closest("[data-sbuy]");if(b){e.stopPropagation();if(!b.disabled)frBuy()}});
 
