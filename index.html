@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
+<script>if(window.top!==window.self){document.documentElement.style.display="none";try{window.top.location.replace(window.self.location.href)}catch(e){}}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <link rel="manifest" href="manifest.json">
@@ -936,7 +939,7 @@ var pad=function(n){return n<10?"0"+n:""+n};
 var fmt=function(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
 var parse=function(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])};
 var addDays=function(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x};
-var esc=function(s){return s.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+var esc=function(s){return s.replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
 var $=function(id){return document.getElementById(id)};
 var todayStr=fmt(new Date());
 var tasks=[];
@@ -1688,7 +1691,7 @@ var DMO=(function(){
 
 /* ---------- 실제 서버(Supabase) ---------- */
 var RB={
- load:function(){return new Promise(function(res,rej){if(window.supabase)return res();var s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";s.onload=res;s.onerror=function(){rej(new Error("서버 연결 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요."))};document.head.appendChild(s)})},
+ load:function(){return new Promise(function(res,rej){if(window.supabase)return res();var s=document.createElement("script");s.src="supabase.js";s.onload=res;s.onerror=function(){rej(new Error("서버 연결 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요."))};document.head.appendChild(s)})},
  init:function(){return RB.load().then(function(){sb=window.supabase.createClient(CFG.url,CFG.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   sb.auth.onAuthStateChange(function(ev,ses){if(ev==="SIGNED_OUT"&&ME){ME=null;frShowGate("login")}else if(ev==="SIGNED_IN"&&ses&&!ME){frSignedIn(RB.user(ses))}});
   return sb.auth.getSession()}).then(function(r){return r.data.session})},
@@ -1841,7 +1844,7 @@ function frFx(box,k){var c=box.querySelector(".fvfx"),pts=[],last=0,red=window.m
  if(k==="rain")for(var i=0;i<46;i++)pts.push([Math.random()*150,Math.random()*80,.6+Math.random()*.7,0]);else if(k==="snow")for(var j=0;j<38;j++)pts.push([Math.random()*136,Math.random()*80,Math.random()<.35?2:1,Math.random()*6.28]);
  wxDraw(k,0,c,pts);if(red||(k!=="rain"&&k!=="snow"))return;
  (function step(t){if(!FV||!c.isConnected)return;var dt=last?Math.min(60,t-last):16;last=t;pts.forEach(function(p){if(k==="rain"){p[1]+=p[2]*dt*.06;if(p[1]>82){p[1]=-3;p[0]=Math.random()*150}}else{p[1]+=(.5+p[2]*.2)*dt*.016*3;if(p[1]>82){p[1]=-2;p[0]=Math.random()*136}}});wxDraw(k,t,c,pts);FV.fx=requestAnimationFrame(step)})(0)}
-function frRenderFV(){var f=$("fv"),d=FV.d,p=d.pub||{},nm=E(d.name||p.name||"이름 없음");
+function frRenderFV(){var f=$("fv"),d=FV.d,p=cleanPub(d.pub),nm=E(d.name||p.name||"이름 없음");
  var more='<button type="button" data-fa="'+(d.friend?"rmf":"addf")+'">'+(d.friend?"친구 삭제":"친구 추가")+'</button><button type="button" data-fa="blk">차단하기</button><button type="button" data-fa="rep">신고하기</button>';
  f.innerHTML='<div class="fv-skin" id="fvSkin"><div class="fv-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>'+nm+'의 미니 홈피</span><button type="button" class="gbb" data-fa="gb">방명록</button>'+(FV.preview?"":'<button type="button" class="fv-ic fv-r" data-fa="more" aria-label="더보기">⋯</button>')+'<button type="button" class="fv-ic'+(FV.preview?" fv-r":"")+'" data-fa="x" aria-label="닫기">✕</button></div>'+(FV.preview?'<div class="fv-pv">👀 미리보기 · 친구가 내 미니홈피를 볼 때 이렇게 보여요 (위클리·먼슬리는 공개 설정에 따라 보여요)</div>':'<div class="fv-more" id="fvMore" hidden>'+more+'</div>')
   +'<div class="fv-body"><div class="fv-top"><div class="picw"><div class="pic'+(p.photo?" has":"")+'" style="'+(p.photo?"background-image:url('"+p.photo+"');":"")+'cursor:default">'+(p.photo?"":"사진 없음")+'</div>'+stampSvg()+(p.photo?'<div class="pic2" style="background-image:url(\''+p.photo+'\')"></div>':"")+'</div><div class="fv-prof"><div class="fv-nrow"><span class="fv-name">'+nm+'</span>'+frLikeHtml()+'</div><div class="fv-bio" id="fvBio">'+E(p.bio||"")+'</div><div class="fv-meta">'+(p.ddate?'<span class="fv-dd">'+frDday(p)+'</span>':"")+(p.mood?'<span>'+E(p.mood)+'</span>':"")+(p.song?'<span class="fv-song">♪ '+E(p.song)+'</span>':"")+'</div></div></div><div class="fv-roomw" id="fvRoom"></div></div>'
@@ -2153,7 +2156,23 @@ function vfMerge(name,a,r){var v=vfS();
  else if(name==="guestbook_mark_read"){v.inbox.forEach(function(x){x.unread=false});if(vfS().inbox.length)saveProf()}
  else if(name==="mark_likes_read"){if(v.likedMe)v.likedMe.unread=false;saveProf()}
  return r}
-function API(name,a){a=a||{};var d=vfDirect(name,a);if(d!==undefined)return Promise.resolve(d);return API0(name,a).then(function(r){return vfMerge(name,a,r)})}
+/* ---------- 보안: 다른 사람이 보낸 공개 정보(pub)는 모양을 검사해서 쓴다 ---------- */
+var PH_RE=/^data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+$/,ID_RE=/^[A-Za-z0-9_-]{1,32}$/,DT_RE=/^\d{4}-\d{2}-\d{2}$/;
+function cleanPub(p){var o={};if(!p||typeof p!=="object"||Array.isArray(p))return o;
+ ["theme","hair","hs","fe","od","oc","pd","sk","wallS","wallC","floorS","floorC"].forEach(function(k){var v=p[k];if(typeof v==="number"&&isFinite(v)&&v>=0&&v<=999&&v===Math.floor(v))o[k]=v});
+ ["name","bio","mood","song","dlabel"].forEach(function(k){var v=p[k];if(typeof v==="string"&&v.length<=200)o[k]=v});
+ if(typeof p.ddate==="string"&&(p.ddate===""||DT_RE.test(p.ddate)))o.ddate=p.ddate;
+ if(typeof p.photo==="string"&&p.photo.length<=140000&&PH_RE.test(p.photo))o.photo=p.photo;
+ if(p.wx&&typeof p.wx==="object"&&typeof p.wx.d==="string"&&typeof p.wx.k==="string"&&DT_RE.test(p.wx.d)&&/^[a-z]{1,12}$/.test(p.wx.k))o.wx={d:p.wx.d,k:p.wx.k};
+ if(Array.isArray(p.furn)&&p.furn.length<=64&&p.furn.every(function(x){return typeof x==="string"&&ID_RE.test(x)}))o.furn=p.furn.slice();
+ if(p.fpos&&typeof p.fpos==="object"&&!Array.isArray(p.fpos)){var kp=Object.keys(p.fpos);if(kp.length<=64&&kp.every(function(k){var a=p.fpos[k];return ID_RE.test(k)&&Array.isArray(a)&&a.length===2&&a.every(function(n){return typeof n==="number"&&isFinite(n)})})){o.fpos={};kp.forEach(function(k){o.fpos[k]=[p.fpos[k][0],p.fpos[k][1]]})}}
+ if(p.fcol&&typeof p.fcol==="object"&&!Array.isArray(p.fcol)){var kc=Object.keys(p.fcol);if(kc.length<=64&&kc.every(function(k){return ID_RE.test(k)&&typeof p.fcol[k]==="number"&&isFinite(p.fcol[k])})){o.fcol={};kc.forEach(function(k){o.fcol[k]=p.fcol[k]})}}
+ return o}
+function secClean(x,d){d=d||0;if(d>6||!x||typeof x!=="object")return x;
+ if(Array.isArray(x)){for(var i=0;i<x.length;i++)x[i]=secClean(x[i],d+1);return x}
+ for(var k in x){if(k==="pub"){if(x.pub&&typeof x.pub==="object")x.pub=cleanPub(x.pub)}else if(k!=="tasks"&&k!=="goals"&&k!=="ledger")x[k]=secClean(x[k],d+1)}
+ return x}
+function API(name,a){a=a||{};var d=vfDirect(name,a);if(d!==undefined)return Promise.resolve(d);return API0(name,a).then(function(r){return vfMerge(name,a,secClean(r))})}
 
 if(prof.sb)frRevert();
 frCoinUi();frWkInit();setInterval(frCoinUi,20000);setInterval(function(){renderReceipt()},60000);

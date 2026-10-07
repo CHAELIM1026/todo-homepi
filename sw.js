@@ -1,6 +1,6 @@
 // 투두 홈피 서비스 워커: 앱 화면 파일만 보관해요. 서버(Supabase) 요청은 건드리지 않아요.
-const CACHE = "todo-homepi-v3";
-const SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
+const CACHE = "todo-homepi-v4";
+const SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./supabase.js"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
