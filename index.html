@@ -662,8 +662,8 @@ input:-webkit-autofill,input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 100
 .fp-s input{flex:1;min-width:0;padding:5px 8px;border:1px solid var(--accent-d);border-radius:8px;font-size:12px;letter-spacing:.5px;text-transform:uppercase}
 .fp-go{display:grid;place-items:center;width:28px;border:1px solid var(--accent-d);border-radius:8px;background:var(--accent);color:var(--accent-ink);cursor:pointer;padding:0}
 .fp-go svg{width:14px;height:14px}
-.fp-tg{display:flex;gap:6px;margin:8px 0 2px}
-.fp-tg button{flex:1;padding:4px 8px;font-size:11px;text-align:center}
+.fp-tg{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 2px}
+.fp-tg button{flex:0 0 auto;padding:3px 7px;font-size:10px;text-align:center}
 .fp-tg button,.fp-btn{padding:3px 8px;border:1px solid var(--accent-d);border-radius:999px;background:var(--panel);color:var(--accent-d);font:inherit;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap}
 .fp-tg button[aria-pressed=true],.fp-btn.on{background:var(--accent);color:var(--accent-ink)}
 .fp-btn.pri{background:var(--accent-d);border-color:var(--accent-d);color:#fff}
@@ -1626,7 +1626,7 @@ drawShop($("gateIcon"),"furn");
    - 설정이 비어 있으면 "데모 모드"로 동작해요(가짜 친구들로 화면만 확인).
    ===================================================================== */
 var CFG=window.TODO_HOME||{},DEMO=!(CFG.url&&CFG.key),ME=null,sb=null;
-var MY={friend_code:"",discoverable:false,share_weekly:false,share_monthly:false},CNT={requests:0,guestbook:0,reports:0,admin:false};
+var MY={friend_code:"",discoverable:false,share_weekly:false,share_monthly:false,share_ledger:false},CNT={requests:0,guestbook:0,reports:0,admin:false};
 var SYNCK=[KEY,KEYG,KEYL,KEYP],META_K="todo-home-sync-v1",DIRTY_K="todo-home-dirty-v1",DEMO_K="todo-home-demo-v2";
 var _si=Storage.prototype.setItem,chg=0,syncT=0,syncing=false,pollT=0,cntT=0;
 function jget(k,d){try{var v=JSON.parse(localStorage.getItem(k)||"null");return v==null?d:v}catch(e){return d}}
@@ -1651,7 +1651,7 @@ var DMO=(function(){
  function sp(o){var b={theme:0,hair:0,hs:6,fe:0,od:0,oc:0,pd:0,sk:0,wallS:3,wallC:0,floorS:0,floorC:0,mood:"",song:"",bio:"",ddate:"",dlabel:""};for(var k in o)b[k]=o[k];return b}
  function mood(i){var m=Array.prototype.map.call($("pmood").options,function(o){return o.value}).filter(Boolean);return m[i%m.length]}
  function tk(id,t,d,time,done,subs){return {id:id,title:t,date:rel(d),time:time||"",done:!!done,subs:subs||[]}}
- function seed(){var s={v:3,session:null,seq:100,likes:[{id:1,from:"u1",to:"me",day:kst(),read:false,claimed:false,t:iso()}],me:{code:"DEMO7K2M",disc:false,sw:false,sm:false},friends:["u1","u2","u3"],
+ function seed(){var s={v:3,session:null,seq:100,likes:[{id:1,from:"u1",to:"me",day:kst(),read:false,claimed:false,t:iso()}],me:{code:"DEMO7K2M",disc:false,sw:false,sm:false,sl:false},friends:["u1","u2","u3"],
   reqIn:[{id:1,from:"u4",t:iso()}],reqOut:[],blocks:[],gb:[],reports:[],users:{
   u1:{id:"u1",likes0:12,name:"서연",code:"K7M2Q9XP",disc:true,sw:true,sm:true,wxk:"rain",pub:sp({name:"서연",bio:"오늘도 한 걸음씩\n천천히 나아가요",theme:1,hair:3,hs:2,fe:1,od:1,oc:1,mood:mood(0),song:"봄날",ddate:rel(40),dlabel:"여행",wallS:7,wallC:1,floorS:2,floorC:1}),
    tasks:[tk(1,"영어 단어 30개",0,"09:00",true),tk(2,"운동 30분",0,"",false),tk(3,"팀플 자료 정리",1,"14:00",false,[{id:1,title:"PPT 만들기",done:true},{id:2,title:"발표 연습",done:false}]),tk(4,"도서관 책 반납",2),tk(5,"친구 생일 선물",3),tk(6,"과제 제출",-1,"23:00",true),tk(7,"독서 20분",0,"",true),tk(8,"카페 스터디",5,"15:00")],
@@ -1682,7 +1682,7 @@ var DMO=(function(){
  var api={
   find_by_code:function(a){tick();var c=String(a.p_code||"").replace(/[^A-Za-z0-9]/g,"").toUpperCase(),id=null;for(var k in S.users)if(S.users[k].code===c)id=k;if(!id||isB(id))return null;var r=strip(U(id));r.friend=isF(id);r.sent=S.reqOut.some(function(x){return x.to===id});r.received=S.reqIn.some(function(x){return x.from===id});return r},
   get_profile:function(a){tick();var id=a.p_id;if(id==="me"){var m=U("me");m.friend=true;m.likes=likeCnt("me");m.liked_today=false;return m}if(!S.users[id]||isB(id))return null;var u=U(id);u.friend=isF(id);u.likes=likeCnt(id);u.liked_today=likedToday(id);return u},
-  friend_view:function(a){tick();var id=a.p_id;if(!S.users[id]||isB(id))return null;var u=S.users[id],r=U(id),f=isF(id);r.friend=f;r.likes=likeCnt(id);r.liked_today=likedToday(id);r.share_weekly=f&&u.sw;r.share_monthly=f&&u.sm;r.tasks=f&&(u.sw||u.sm)?u.tasks:null;r.goals=f&&u.sw?u.goals:null;r.ledger=f&&(u.sw||u.sm)?u.ledger:null;return JSON.parse(JSON.stringify(r))},
+  friend_view:function(a){tick();var id=a.p_id;if(!S.users[id]||isB(id))return null;var u=S.users[id],r=U(id),f=isF(id);r.friend=f;r.likes=likeCnt(id);r.liked_today=likedToday(id);r.share_weekly=f&&u.sw;r.share_monthly=f&&u.sm;var sl=u.sl===undefined?!!(u.sw||u.sm):!!u.sl;r.share_ledger=f&&sl;r.tasks=f&&(u.sw||u.sm)?u.tasks:null;r.goals=f&&u.sw?u.goals:null;r.ledger=f&&sl?u.ledger:null;return JSON.parse(JSON.stringify(r))},
   recommend_users:function(){tick();var out=[];for(var k in S.users){var u=S.users[k];if(!u.disc||isF(k)||isB(k))continue;if(S.reqIn.some(function(x){return x.from===k})||S.reqOut.some(function(x){return x.to===k}))continue;out.push(strip(U(k)))}return out.sort(function(){return Math.random()-.5}).slice(0,8)},
   send_request:function(a){tick();var id=a.p_to;if(!S.users[id])return"invalid";if(isB(id))return"blocked";if(isF(id))return"already";var i=-1;S.reqIn.forEach(function(x,j){if(x.from===id)i=j});if(i>=0){S.reqIn.splice(i,1);addF(id);save();return"accepted"}if(!S.reqOut.some(function(x){return x.to===id})){S.reqOut.push({id:++S.seq,to:id,ms:Date.now()})}save();return"sent"},
   respond_request:function(a){tick();var r=null;S.reqIn.forEach(function(x){if(x.id===a.p_id)r=x});if(!r)return"none";S.reqIn=S.reqIn.filter(function(x){return x!==r});if(a.p_accept){addF(r.from);save();return"accepted"}save();return"declined"},
@@ -1710,8 +1710,8 @@ var DMO=(function(){
  function pickNew(){var c=["u5","u6","u7"].filter(function(k){return !isF(k)&&!isB(k)&&!S.reqIn.some(function(x){return x.from===k})&&!S.reqOut.some(function(x){return x.to===k})});return c[0]||null}
  return {api:api,
   session:function(){load();return S.session},login:function(adm){load();S.session={admin:!!adm};save()},logout:function(){load();S.session=null;save()},
-  getMy:function(){load();return {friend_code:S.me.code,discoverable:S.me.disc,share_weekly:S.me.sw,share_monthly:S.me.sm}},
-  setMy:function(p){load();if("discoverable" in p)S.me.disc=p.discoverable;if("share_weekly" in p)S.me.sw=p.share_weekly;if("share_monthly" in p)S.me.sm=p.share_monthly;save()},
+  getMy:function(){load();return {friend_code:S.me.code,discoverable:S.me.disc,share_weekly:S.me.sw,share_monthly:S.me.sm,share_ledger:!!S.me.sl}},
+  setMy:function(p){load();if("discoverable" in p)S.me.disc=p.discoverable;if("share_weekly" in p)S.me.sw=p.share_weekly;if("share_monthly" in p)S.me.sm=p.share_monthly;if("share_ledger" in p)S.me.sl=p.share_ledger;save()},
   codes:function(){load();return ["K7M2Q9XP (서연·친구)","P3WD8TRN (지우·친구)","T2LB6KJZ (은우)","C6VH7PDW (도윤·코드로만 검색)","N4YT9AUK (수아·요청을 안 받아줘요)"]},
   tool:function(w){load();var fr=S.friends.filter(function(x){return x!=="u3"}),f=fr[Math.floor(Math.random()*fr.length)]||"u1";
    if(w==="req"){var k=pickNew();if(!k)return"더 보낼 데모 요청이 없어요";S.reqIn.push({id:++S.seq,from:k,t:iso()});save();return S.users[k].name+"님이 친구 요청을 보냈어요"}
@@ -1735,7 +1735,7 @@ var RB={
  pull:function(){return sb.from("user_data").select("*").eq("user_id",ME.id).maybeSingle().then(function(r){if(r.error)throw r.error;return r.data})},
  stamp:function(){return sb.from("user_data").select("updated_at").eq("user_id",ME.id).maybeSingle().then(function(r){if(r.error)throw r.error;return r.data&&r.data.updated_at})},
  push:function(d){return sb.from("user_data").upsert({user_id:ME.id,tasks:d.tasks,goals:d.goals,ledger:d.ledger,prof:d.prof,updated_at:new Date().toISOString()}).select("updated_at").single().then(function(r){if(r.error)throw r.error;return r.data.updated_at})},
- my:function(){return sb.from("profiles").select("friend_code,discoverable,share_weekly,share_monthly").eq("id",ME.id).maybeSingle().then(function(r){if(r.error)throw r.error;return r.data||{friend_code:"",discoverable:false,share_weekly:false,share_monthly:false}})},
+ my:function(){var d0={friend_code:"",discoverable:false,share_weekly:false,share_monthly:false,share_ledger:false};return sb.from("profiles").select("friend_code,discoverable,share_weekly,share_monthly,share_ledger").eq("id",ME.id).maybeSingle().then(function(r){if(r.error){return sb.from("profiles").select("friend_code,discoverable,share_weekly,share_monthly").eq("id",ME.id).maybeSingle().then(function(r2){if(r2.error)throw r2.error;return Object.assign({},d0,r2.data||{})})}return Object.assign({},d0,r.data||{})})},
  setMy:function(p){return sb.from("profiles").update(p).eq("id",ME.id).then(function(r){if(r.error)throw r.error})}
 };
 function API0(name,args){return DEMO?Promise.resolve().then(function(){return DMO.api[name](args||{})}):RB.call(name,args)}
@@ -1821,7 +1821,7 @@ function frLoadL(){Promise.all([API("list_friends"),API("list_requests"),API("li
 /* ---------- 친구 추가 팝업 ---------- */
 var FPX='<button type="button" class="fpx" aria-label="창 닫기">\u00d7</button>';
 function frRenderATop(){var p=$("fpopA");p.innerHTML='<form class="fp-s" id="fpf" autocomplete="off"><input id="fpc" type="text" placeholder="친구 코드 입력" maxlength="12" aria-label="친구 코드" spellcheck="false"><button type="submit" class="fp-go" aria-label="검색">'+MAG+'</button><button type="button" class="fpx fpx-in" aria-label="창 닫기">\u00d7</button></form><div class="fp-tg" id="fpTg"></div><div id="fpres"></div><div id="fpbody"></div>';frRenderTg()}
-function frRenderTg(){var t=$("fpTg");if(!t)return;t.innerHTML='<button type="button" data-act="share" data-sh="share_weekly" aria-pressed="'+MY.share_weekly+'">위클리 '+(MY.share_weekly?"공개":"비공개")+'</button><button type="button" data-act="share" data-sh="share_monthly" aria-pressed="'+MY.share_monthly+'">먼슬리 '+(MY.share_monthly?"공개":"비공개")+'</button>'}
+function frRenderTg(){var t=$("fpTg");if(!t)return;t.innerHTML='<button type="button" data-act="share" data-sh="share_weekly" aria-pressed="'+MY.share_weekly+'">위클리 '+(MY.share_weekly?"공개":"비공개")+'</button><button type="button" data-act="share" data-sh="share_monthly" aria-pressed="'+MY.share_monthly+'">먼슬리 '+(MY.share_monthly?"공개":"비공개")+'</button><button type="button" data-act="share" data-sh="share_ledger" aria-pressed="'+MY.share_ledger+'">가계부 '+(MY.share_ledger?"공개":"비공개")+'</button>'}
 function frRow(u,right,face){return '<div class="fp-row"><button type="button" class="fp-face" data-act="visit" data-id="'+E(u.id)+'" aria-label="'+frNm(u)+'의 미니홈피">'+frFace(u.pub)+'</button><span class="fp-nm">'+frNm(u)+'</span>'+right+'</div>'}
 function frRenderRes(){var r=$("fpres");if(!r)return;var f=FRS.found;if(!f){r.innerHTML=FRS.msg?'<div class="fp-msg">'+E(FRS.msg)+'</div>':"";return}
  var right=f.friend?'<span class="fp-btn" style="border:0">친구예요</span>':(f.received?'<button type="button" class="fp-btn pri" data-act="addf" data-id="'+E(f.id)+'">수락하기</button>':(f.sent||FRS.sentIds[f.id]?'<button type="button" class="fp-btn" disabled>요청함</button>':'<button type="button" class="fp-btn pri" data-act="addf" data-id="'+E(f.id)+'">친구 추가하기</button>'));
@@ -1901,12 +1901,13 @@ function frRenderPanel(){var d=FV.d,b=$("fvPanel");if(!b)return;
 function frTaskRows(ts){return ts.map(function(t){var s=t.subs||[];return '<div class="fw-t'+(t.done?" done":"")+'">'+ck("disabled",t.done,1)+'<span class="t">'+E(t.title)+'</span>'+(t.time?'<small>'+E(t.time)+'</small>':"")+'</div>'+s.map(function(x){return '<div class="fw-s'+(x.done?" done":"")+'">· '+E(x.title)+'</div>'}).join("")}).join("")}
 function frTasksOn(s){return (FV.d.tasks||[]).filter(function(t){return t.date===s}).sort(function(a,b){return (a.done?1:0)-(b.done?1:0)})}
 function frSum(list){return list.reduce(function(a,x){return a+(+x.amt||0)},0)}
-function frWeekHtml(){var d=FV.d,ws=parse(FV.wk),we=addDays(ws,6),led=d.ledger||[],goal=(d.goals||{})[FV.wk],wl=[],h='<div class="fv-nav"><button type="button" data-fa="wk-1" aria-label="이전 주">‹</button><b>'+(ws.getMonth()+1)+"월 "+ws.getDate()+"일 – "+(we.getMonth()+1)+"월 "+we.getDate()+'일</b><button type="button" data-fa="wk0">이번 주</button><button type="button" data-fa="wk1" aria-label="다음 주">›</button></div>';
+function frLedOk(d){return d.share_ledger===undefined?true:!!d.share_ledger}
+function frWeekHtml(){var d=FV.d,ws=parse(FV.wk),we=addDays(ws,6),lok=frLedOk(d),led=lok?(d.ledger||[]):[],goal=(d.goals||{})[FV.wk],wl=[],h='<div class="fv-nav"><button type="button" data-fa="wk-1" aria-label="이전 주">‹</button><b>'+(ws.getMonth()+1)+"월 "+ws.getDate()+"일 – "+(we.getMonth()+1)+"월 "+we.getDate()+'일</b><button type="button" data-fa="wk0">이번 주</button><button type="button" data-fa="wk1" aria-label="다음 주">›</button></div>';
  if(goal)h+='<div class="fv-goal"><i>'+E(wkLabel(FV.wk))+' 목표</i>'+E(goal)+'</div>';
  for(var j=0;j<7;j++){var s=fmt(addDays(ws,j)),ts=frTasksOn(s),dn=ts.filter(function(t){return t.done}).length;wl=wl.concat(led.filter(function(x){return x.date===s}));
   h+='<div class="fw-day"><div class="fw-dh"><span class="w '+dcls(s,j)+'">'+DOW[j]+'</span><b>'+(+s.slice(5,7))+"/"+(+s.slice(8))+'</b><span class="hn">'+E(holName(s))+'</span>'+clover4("f"+s,dn,ts.length)+'</div>'+(ts.length?frTaskRows(ts):'<div class="fw-t"><small>기록 없음</small></div>')+'</div>'}
- h+='<div class="fv-led"><h5>가계부</h5>'+(wl.length?wl.map(function(x){return '<div class="fv-lr"><span>'+(+x.date.slice(5,7))+"/"+(+x.date.slice(8))+" "+E(x.what)+'</span><span>'+won(+x.amt||0)+'</span></div>'}).join("")+'<div class="fv-lt"><span>이번 주 합계</span><span>'+won(frSum(wl))+'</span></div>':'<div class="fv-lr"><span>이번 주 기록이 없어요</span></div>')+'</div>';return h}
-function frMonthHtml(){var d=FV.d,c=FV.mo,led=d.ledger||[],first=new Date(c.getFullYear(),c.getMonth(),1),start=addDays(first,-first.getDay()),rows=Math.ceil((first.getDay()+new Date(c.getFullYear(),c.getMonth()+1,0).getDate())/7),mx=innerWidth<=820?2:3,
+ h+='<div class="fv-led"><h5>가계부</h5>'+(!lok?'<div class="fv-lr"><span>가계부는 비공개예요</span></div>':wl.length?wl.map(function(x){return '<div class="fv-lr"><span>'+(+x.date.slice(5,7))+"/"+(+x.date.slice(8))+" "+E(x.what)+'</span><span>'+won(+x.amt||0)+'</span></div>'}).join("")+'<div class="fv-lt"><span>이번 주 합계</span><span>'+won(frSum(wl))+'</span></div>':'<div class="fv-lr"><span>이번 주 기록이 없어요</span></div>')+'</div>';return h}
+function frMonthHtml(){var d=FV.d,c=FV.mo,led=frLedOk(d)?(d.ledger||[]):[],first=new Date(c.getFullYear(),c.getMonth(),1),start=addDays(first,-first.getDay()),rows=Math.ceil((first.getDay()+new Date(c.getFullYear(),c.getMonth()+1,0).getDate())/7),mx=innerWidth<=820?2:3,
  h='<div class="fv-nav"><button type="button" data-fa="mo-1" aria-label="이전 달">‹</button><b>'+c.getFullYear()+"년 "+(c.getMonth()+1)+'월</b><button type="button" data-fa="mo0">오늘</button><button type="button" data-fa="mo1" aria-label="다음 달">›</button></div><div class="grid">'+head();
  for(var i=0;i<rows*7;i++){var dd=addDays(start,i),s=fmt(dd),ts=frTasksOn(s),tt=frSum(led.filter(function(x){return x.date===s}));
   h+='<div class="cell'+(dd.getMonth()!==c.getMonth()?" out":"")+(s===todayStr?" today":"")+(s===FV.sel?" sel":"")+'" data-fday="'+s+'"><span class="num '+dcls(s,dd.getDay())+'">'+dd.getDate()+'</span>'+hn(s)+ts.slice(0,mx).map(function(t){return '<button type="button" class="chip'+(t.done?" done":"")+'" tabindex="-1" title="'+E(t.title)+'">'+(t.time?E(t.time)+" ":"")+E(t.title)+'</button>'}).join("")+(ts.length>=3?'<div class="more3"><i></i><i></i><i></i></div>':"")+(tt?'<span class="won">'+won(tt)+'</span>':"")+'</div>'}
@@ -1963,8 +1964,8 @@ $("gbv").addEventListener("click",function(e){if(!GB)return;if(e.target===$("gbv
  else if(a==="blk"){frBlock(au,nm).then(function(ok){if(ok)again()})}
  else if(a==="res"){API("resolve_report",{p_id:+id,p_flag:b.getAttribute("data-flag")==="1"}).then(again)}});
 $("gbb").onclick=function(e){e.stopPropagation();if(ME)frOpenGB(ME.id,prof.name||"나",true)};
-function frPreview(){if(!ME)return;frPops();var sw=!!MY.share_weekly,sm=!!MY.share_monthly,pb=pubOf(prof);if(prof.photo)pb.photo=prof.photo;if(FV&&FV.fx)cancelAnimationFrame(FV.fx);
- FV={id:ME.id,preview:true,d:{id:ME.id,name:prof.name||"",pub:pb,friend:true,likes:0,liked_today:false,share_weekly:sw,share_monthly:sm,tasks:(sw||sm)?JSON.parse(JSON.stringify(tasks)):null,goals:sw?JSON.parse(JSON.stringify(goals)):null,ledger:(sw||sm)?JSON.parse(JSON.stringify(ledger)):null},tab:"",wk:wkStart(todayStr),mo:new Date(),sel:todayStr,fx:0};frRenderFV();API("get_profile",{p_id:ME.id}).then(function(r){if(FV&&FV.preview&&r){FV.d.likes=r.likes||0;frReLike()}}).catch(function(){})}
+function frPreview(){if(!ME)return;frPops();var sw=!!MY.share_weekly,sm=!!MY.share_monthly,sl=!!MY.share_ledger,pb=pubOf(prof);if(prof.photo)pb.photo=prof.photo;if(FV&&FV.fx)cancelAnimationFrame(FV.fx);
+ FV={id:ME.id,preview:true,d:{id:ME.id,name:prof.name||"",pub:pb,friend:true,likes:0,liked_today:false,share_weekly:sw,share_monthly:sm,share_ledger:sl,tasks:(sw||sm)?JSON.parse(JSON.stringify(tasks)):null,goals:sw?JSON.parse(JSON.stringify(goals)):null,ledger:sl?JSON.parse(JSON.stringify(ledger)):null},tab:"",wk:wkStart(todayStr),mo:new Date(),sel:todayStr,fx:0};frRenderFV();API("get_profile",{p_id:ME.id}).then(function(r){if(FV&&FV.preview&&r){FV.d.likes=r.likes||0;frReLike()}}).catch(function(){})}
 $("pvb").onclick=function(e){e.stopPropagation();frPreview()};
 document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;if(!$("fmodal").hidden)frModalClose();else if(!$("gbv").hidden){GB=null;$("gbv").hidden=true;document.body.style.overflow=!$("fv").hidden?"hidden":""}else if(!$("fv").hidden)frCloseFV();else frPops()});
 window.addEventListener("resize",frPlace);
@@ -1977,7 +1978,7 @@ var TOURF=[
  {s:"#pfa",act:function(){return !$("fpopA").hidden},t:"① 친구 추가 해 보기",x:"먼저 연습용 친구를 만나 볼게요. 이름 옆의 + 버튼을 눌러 보세요."},
  {s:"#fpopA",act:function(){return !!(FRS.found&&FRS.found.vf)},aux:{label:"코드 자동 입력",fn:function(){var i=$("fpc");if(i){i.value=VFCODE;frSearch()}}},t:"친구 코드로 찾기",x:"친구 코드 칸에 MUSHROOM 을 입력하고 돋보기(🔍)를 눌러 보세요. 내 친구 코드는 이 창 아래쪽에 있어요."},
  {s:"#fpres",act:function(){return vfS().on},t:"친구 추가하기",x:"검색된 프로필의 '친구 추가하기'를 눌러 보세요. 진짜 친구는 상대가 수락해야 친구가 되지만, 버섯이는 바로 수락해요."},
- {s:"#fpTg",t:"공개 설정",x:"위클리 · 먼슬리를 친구에게 보여 줄지 여기서 정해요. 지금은 그대로 두어도 돼요. (미니홈피 자체는 누구나 볼 수 있어요)",next:function(){frPops()}},
+ {s:"#fpTg",t:"공개 설정",x:"위클리 · 먼슬리 · 가계부를 친구에게 보여 줄지 여기서 정해요. 지금은 그대로 두어도 돼요. (미니홈피 자체는 누구나 볼 수 있어요)",next:function(){frPops()}},
  {s:"#pfl",act:function(){return !$("fpopL").hidden},t:"② 친구 목록",x:"이번엔 메모지 모양의 친구 목록 버튼을 눌러 보세요."},
  {s:"#fpopL",act:function(){return !!(FV&&FV.id===VFID)},t:"친구 미니홈피에 놀러 가기",x:"친구 목록에 버섯이가 생겼어요! 얼굴 원(프로필)을 눌러 미니홈피에 놀러 가 보세요."},
  {s:"#fv .fv-like",act:function(){return vfS().likedDay===kst()},t:"③ 좋아요 누르기 ♥",x:"이름 옆 하트 버튼이 좋아요예요. 친구가 아니어도 누를 수 있고, 같은 사람에게는 하루에 한 번만 눌러요. 눌러 보세요!"},
@@ -2007,7 +2008,7 @@ var TOURR=[
  {t:"사용법 다시 보기",x:"투두 홈의 기능을 한 번 더 둘러볼게요. (다시 보기에서는 코인이 지급되지 않고, 상점도 코인이 필요해요)"},
  {s:"#pname",t:"내 프로필",x:"이름과 한줄소개를 적고, 사진 · 디데이 · 테마색 · 노래로 미니홈피를 꾸며 보세요."},
  {s:"#pwx",t:"오늘의 날씨",x:"매일 한 번 오늘 날씨를 골라요. 미니룸에 그대로 나타나요. 아직 안 골랐다면 빨간 불이 깜빡여요."},
- {s:"#pfa",t:"친구 추가 (+)",x:"친구 코드를 입력해 친구를 찾고 요청해요. 받은 요청은 여기서 수락/거절해요. 내 친구 코드, 위클리 · 먼슬리 공개 설정, '추천에 나를 표시'도 여기 있어요."},
+ {s:"#pfa",t:"친구 추가 (+)",x:"친구 코드를 입력해 친구를 찾고 요청해요. 받은 요청은 여기서 수락/거절해요. 내 친구 코드, 위클리 · 먼슬리 · 가계부 공개 설정, '추천에 나를 표시'도 여기 있어요."},
  {s:"#pfl",t:"친구 목록",x:"내 친구를 모아 보고 미니홈피에 놀러 갈 수 있어요. 놀러 가면 이름 옆 ♥ 버튼으로 좋아요(같은 사람에게 하루 한 번)를 누를 수 있어요."},
  {s:"#gbb",t:"방명록",x:"받은 방명록과 '좋아요 누른 친구'를 확인해요. 공개/비공개 글, 보관, 삭제, 신고/차단을 할 수 있고 새 글이나 좋아요가 오면 빨간 불이 켜져요."},
  {s:"#pvb",t:"미리보기",x:"다른 사람이 내 미니홈피를 볼 때 어떻게 보이는지 미리 볼 수 있어요."},
@@ -2161,7 +2162,7 @@ function vfS(){var v=prof.vf;if(!v||typeof v!=="object")v=prof.vf={avail:false,o
 function vfPub(){return {name:"버섯이 🍄",bio:"안녕! 나는 연습용 친구 버섯이야.\n방명록도 남기고 좋아요도 눌러 봐!",theme:5,hair:4,hs:4,fe:2,od:7,oc:5,pd:0,sk:0,wallS:7,wallC:2,floorS:1,floorC:3,mood:"😊",song:"버섯 노래",ddate:fmt(addDays(new Date(),30)),dlabel:"숲속 소풍",wx:{d:kst(),k:"sun"}}}
 function vfLite(){var p=vfPub();return {id:VFID,name:"버섯이 🍄 (연습 친구)",vf:true,pub:p}}
 function vfView(){var v=vfS(),t=fmt(new Date()),w={};w[wkStart(t)]="이번 주는 버섯 농사 열심히!";
- var base={id:VFID,name:"버섯이 🍄 (연습 친구)",vf:true,pub:vfPub(),friend:!!v.on,likes:7+(v.likedDay?1:0),liked_today:v.likedDay===kst(),share_weekly:!!v.on,share_monthly:!!v.on,tasks:null,goals:null,ledger:null};
+ var base={id:VFID,name:"버섯이 🍄 (연습 친구)",vf:true,pub:vfPub(),friend:!!v.on,likes:7+(v.likedDay?1:0),liked_today:v.likedDay===kst(),share_weekly:!!v.on,share_monthly:!!v.on,share_ledger:!!v.on,tasks:null,goals:null,ledger:null};
  if(v.on){base.tasks=[{id:1,title:"버섯 키우기 물 주기",date:t,time:"09:00",done:true,subs:[]},{id:2,title:"포자 모으기",date:t,time:"",done:false,subs:[{id:1,title:"갓 닦기",done:true},{id:2,title:"줄기 닦기",done:false}]},{id:3,title:"숲 산책",date:fmt(addDays(new Date(),1)),time:"15:00",done:false,subs:[]},{id:4,title:"친구에게 방명록 남기기",date:fmt(addDays(new Date(),2)),time:"",done:false,subs:[]}];base.goals=w;base.ledger=[{id:1,date:t,what:"버섯 비료",amt:3200}]}
  return base}
 function vfAdd(){var v=vfS();v.avail=true;v.on=true;v.inbox.push({id:VFN+(++v.seq),body:"친구가 되어 줘서 고마워! 🍄 내 미니홈피에도 놀러 와 줘~",is_public:true,archived:false,unread:true,created_at:new Date().toISOString(),mine:false});v.likedMe={t:new Date().toISOString(),unread:true};saveProf()}
