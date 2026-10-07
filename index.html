@@ -894,6 +894,15 @@ body.fpo .fpop:not([hidden]),body.fpo .fpop:not([hidden]) *{pointer-events:auto!
 .sub .ed,.in .ed{flex:none;background:none;border:1px solid var(--line);border-radius:6px;padding:0 6px;font-size:11px;color:var(--mute)}
 .sub .ed:hover,.in .ed:hover{border-color:var(--accent-d);color:var(--accent-d)}
 .in.ief{display:flex}
+/* ---- 컴퓨터 먼슬리: 영수증·날짜 미정 상자를 크게 (가로 240px 동일, 세로 = 먼슬리 칸 높이 126px의 두 배) ---- */
+@media(min-width:821px){
+.under{align-items:flex-start}
+.rs-month{width:240px;height:252px}
+.rs-month .rcpt{height:252px;font-size:12.5px;padding:12px 14px 14px}
+.rs-month .rl{flex:1 1 0;min-height:0;max-height:none;overflow-y:auto}
+.under .inbox{width:240px;height:252px;box-sizing:border-box;display:flex;flex-direction:column}
+.under .inbox #inlist{flex:1 1 0;min-height:0;max-height:none;overflow-y:auto}
+}
 </style>
 </head>
 <body>
