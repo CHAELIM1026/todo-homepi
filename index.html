@@ -1573,10 +1573,11 @@ $("pname").addEventListener("input",wxLay);
 applyWx();wxLay();setInterval(function(){var d=kst();if(d!==wxDay){wxDay=d;applyWx()}},20000);
 var BIOW=220,DM=window.matchMedia?window.matchMedia("(min-width:821px)"):null,CB=$("cbox"),inBox=false;
 function deskOn(){return !!(DM&&DM.matches&&CB)}
-function boxLay(){if(!deskOn())return;var rwp=document.querySelector(".roomwrap");rwp.style.position="relative";rwp.style.left="0px";var sk=CB.offsetParent;if(!sk)return;var o=sk.getBoundingClientRect(),bi=document.querySelector(".bio").getBoundingClientRect(),sh=document.querySelector(".sl1").getBoundingClientRect(),pf=$("pf").getBoundingClientRect();
- CB.style.left=Math.round((bi.left+BIOW+sh.left)/2-34-o.left-sk.clientLeft)+"px";CB.style.top=Math.round(pf.top+pf.height/2-84-o.top-sk.clientTop)+"px";
+function boxLay(){var dr0=document.querySelector(".dr");if(!deskOn()){if(dr0)dr0.style.transform="";return}if(dr0)dr0.style.transform="";var rwp=document.querySelector(".roomwrap");rwp.style.position="relative";rwp.style.left="0px";var sk=CB.offsetParent;if(!sk)return;var o=sk.getBoundingClientRect(),bi=document.querySelector(".bio").getBoundingClientRect(),sh=document.querySelector(".sl1").getBoundingClientRect(),pf=$("pf").getBoundingClientRect();
+ var bioR=Math.max(bi.left+BIOW,bi.right);CB.style.left=Math.round(Math.max((bioR+sh.left)/2-34,bioR+20)-o.left-sk.clientLeft)+"px";CB.style.top=Math.round(pf.top+pf.height/2-84-o.top-sk.clientTop)+"px";
  var dl=document.querySelector(".dl"),rr=rwp.getBoundingClientRect(),cr=CB.getBoundingClientRect(),dr=dl?dl.getBoundingClientRect():null;
- if(dr&&dr.top<rr.bottom&&dr.left>cr.right){rwp.style.left=Math.round((cr.right+dr.left)/2-(rr.left+rr.width/2))+"px"}}
+ if(dr&&dr.top<rr.bottom&&dr.left>cr.right){rwp.style.left=Math.round((cr.right+dr.left)/2-(rr.left+rr.width/2))+"px"}
+ if(dr0&&dr){var pr=dr0.getBoundingClientRect(),dx=Math.round((dr.right+o.right)/2-(pr.left+pr.right)/2);if(dx>0)dr0.style.transform="translateX("+dx+"px)"}}
 function boxPt(){var r=$("cgl").getBoundingClientRect(),o=$("roomw").getBoundingClientRect();return [r.left+r.width/2-o.left,r.bottom-o.top-13]}
 function boxSnap(){var W=$("wk2"),g=boxPt();W.style.transition="none";W.style.setProperty("--f",1);W.style.transform="translate("+(g[0]-70)+"px,"+(g[1]-58)+"px)";void W.offsetWidth;W.style.transition=""}
 function cbSync(){if(!CB)return;$("cback").disabled=inBox||!!wlk;$("chome").disabled=!inBox||!!wlk}
