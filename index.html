@@ -883,6 +883,17 @@ body.fpo .fpop:not([hidden]),body.fpo .fpop:not([hidden]) *{pointer-events:auto!
 .own-cut::before,.own-cut::after{content:"";flex:1;border-top:2px dashed var(--accent-d);opacity:.55}
 .it.own{background:color-mix(in srgb,var(--panel) 70%,var(--accent) 30%)}
 .it .ownck{position:absolute;right:-4px;top:-4px;width:15px;height:15px;border-radius:50%;background:var(--accent-d);color:#fff;font-size:10px;font-weight:700;line-height:15px;text-align:center;pointer-events:none}
+
+/* ---- 추가: 위클리 항목 수정 ---- */
+.tef{display:flex;gap:6px;align-items:center;flex:1;min-width:0}
+.tef input[type=text]{flex:1;min-width:0;padding:4px 8px;font-size:14px}
+.tef input[type=time]{flex:none;width:92px;padding:4px 4px;font-size:13px}
+.tef button{flex:none;padding:2px 9px;border-radius:6px;border:1px solid var(--accent-d);background:var(--accent);color:var(--accent-ink);font-size:12px}
+.tef button[data-tecancel]{background:none;color:var(--mute);border-color:var(--line)}
+.sub.sef{margin-left:36px}
+.sub .ed,.in .ed{flex:none;background:none;border:1px solid var(--line);border-radius:6px;padding:0 6px;font-size:11px;color:var(--mute)}
+.sub .ed:hover,.in .ed:hover{border-color:var(--accent-d);color:var(--accent-d)}
+.in.ief{display:flex}
 </style>
 </head>
 <body>
@@ -967,11 +978,11 @@ function clover4(s,done,total){var r=total?done/total:0,top=22.2-20.4*r,h='<svg 
  return h+'</svg>'}
 function taskRow(t,showDate){
  var s=t.subs||[],g=grp(t.date),i=g.indexOf(t),up=i>0&&!g[i-1].done===!t.done,dn=i<g.length-1&&!g[i+1].done===!t.done;
- var h='<div class="task'+(t.done?' done':'')+'"><div class="row">'+ck('data-t="'+t.id+'"',t.done)+'<span class="t">'+esc(t.title)+'</span>'+(t.time?'<small>'+t.time+'</small>':'')+(showDate&&t.date?'<small>'+(+t.date.slice(5,7))+'/'+(+t.date.slice(8))+'</small>':'')+'</div>';
- if(s.length)h+='<div class="subs">'+s.map(function(x){return '<div class="sub'+(x.done?' done':'')+'">'+ck('data-ts="'+t.id+':'+x.id+'"',x.done,1)+'<span class="t">'+esc(x.title)+'</span><button type="button" class="x" data-ds="'+t.id+':'+x.id+'" aria-label="세부항목 삭제">✕</button></div>'}).join('')+'</div>';
+ var h='<div class="task'+(t.done?' done':'')+'"><div class="row">'+(editing==="t:"+t.id?'<form class="tef" data-tef="'+t.id+'"><input type="text" name="t" value="'+esc(t.title)+'" maxlength="80" required aria-label="할 일 수정"><input type="time" name="m" value="'+(t.time||'')+'" aria-label="시간 수정"><button>저장</button><button type="button" data-tecancel="1">취소</button></form>':ck('data-t="'+t.id+'"',t.done)+'<span class="t">'+esc(t.title)+'</span>'+(t.time?'<small>'+t.time+'</small>':'')+(showDate&&t.date?'<small>'+(+t.date.slice(5,7))+'/'+(+t.date.slice(8))+'</small>':''))+'</div>';
+ if(s.length)h+='<div class="subs">'+s.map(function(x){if(editing==="s:"+t.id+":"+x.id)return '<form class="sub tef sef" data-sef="'+t.id+':'+x.id+'"><input type="text" name="t" value="'+esc(x.title)+'" maxlength="80" required aria-label="세부항목 수정"><button>저장</button><button type="button" data-tecancel="1">취소</button></form>';return '<div class="sub'+(x.done?' done':'')+'">'+ck('data-ts="'+t.id+':'+x.id+'"',x.done,1)+'<span class="t">'+esc(x.title)+'</span><button type="button" class="ed" data-se="'+t.id+':'+x.id+'" aria-label="세부항목 수정">수정</button><button type="button" class="x" data-ds="'+t.id+':'+x.id+'" aria-label="세부항목 삭제">✕</button></div>'}).join('')+'</div>';
  if(addingSub==t.id)h+='<form class="subf" data-sf="'+t.id+'"><input type="text" placeholder="세부항목 (예: 경제발전론)" required aria-label="세부항목"><button>추가</button></form>';
  if(resched==t.id&&!t.done)h+='<div class="rsf"><input type="date" data-rd="'+t.id+'" value="'+(t.date||'')+'" aria-label="새 날짜"><button type="button" data-tm="'+t.id+'">내일로</button></div>';
- return h+'<div class="acts"><button type="button" data-up="'+t.id+'"'+(up?'':' disabled')+'>↑ 위로</button><button type="button" data-dn="'+t.id+'"'+(dn?'':' disabled')+'>↓ 아래로</button><button type="button" data-sub="'+t.id+'">+ 세부항목</button><button type="button" class="rs" data-r="'+t.id+'"'+(t.done?' disabled':'')+'>날짜 변경</button><button type="button" data-d="'+t.id+'">삭제</button></div></div>';
+ return h+'<div class="acts"><button type="button" data-up="'+t.id+'"'+(up?'':' disabled')+'>↑ 위로</button><button type="button" data-dn="'+t.id+'"'+(dn?'':' disabled')+'>↓ 아래로</button><button type="button" data-sub="'+t.id+'">+ 세부항목</button><button type="button" data-te="'+t.id+'">수정</button><button type="button" class="rs" data-r="'+t.id+'"'+(t.done?' disabled':'')+'>날짜 변경</button><button type="button" data-d="'+t.id+'">삭제</button></div></div>';
 }
 var KEYG="todo-cal-goals-v1",goals={};
 try{goals=JSON.parse(localStorage.getItem(KEYG)||"{}")||{}}catch(e){goals={}}
@@ -998,7 +1009,7 @@ function renderSide(){
 }
 function renderInbox(){
  var l=tasks.filter(function(t){return !t.date});
- $("inlist").innerHTML=l.length?l.map(function(t){return '<div class="in" draggable="true" data-id="'+t.id+'"><span class="grip" aria-hidden="true">⠿</span><span class="t">'+esc(t.title)+'</span><button type="button" class="mv" data-mv="'+t.id+'">→ 선택한 날</button><button type="button" class="x" data-d="'+t.id+'" aria-label="삭제">✕</button></div>'}).join(''):'<div class="empty">날짜가 정해지지 않은 할 일이 없어요.</div>';
+ $("inlist").innerHTML=l.length?l.map(function(t){if(editing==="i:"+t.id)return '<form class="in tef ief" data-tef="'+t.id+'"><input type="text" name="t" value="'+esc(t.title)+'" maxlength="80" required aria-label="날짜 미정 할 일 수정"><button>저장</button><button type="button" data-tecancel="1">취소</button></form>';return '<div class="in" draggable="true" data-id="'+t.id+'"><span class="grip" aria-hidden="true">⠿</span><span class="t">'+esc(t.title)+'</span><button type="button" class="ed" data-ie="'+t.id+'" aria-label="수정">수정</button><button type="button" class="mv" data-mv="'+t.id+'">→ 선택한 날</button><button type="button" class="x" data-d="'+t.id+'" aria-label="삭제">✕</button></div>'}).join(''):'<div class="empty">날짜가 정해지지 않은 할 일이 없어요.</div>';
 }
 var HC={},FB={2025:["2025-01-29","2025-05-05","2025-10-06"],2026:["2026-02-17","2026-05-24","2026-09-25"],2027:["2027-02-07","2027-05-13","2027-09-15"]},SP={"2025-01-27":"임시공휴일","2025-06-03":"대선일","2026-06-03":"지방선거일"};
 function lunar(y){var L={};try{var f=new Intl.DateTimeFormat("en-u-ca-chinese",{month:"numeric",day:"numeric"});for(var d=new Date(y,0,1);d.getFullYear()===y;d.setDate(d.getDate()+1)){var mo="",dy="";f.formatToParts(d).forEach(function(x){if(x.type==="month")mo=x.value;if(x.type==="day")dy=x.value});if(/^\d+$/.test(mo))L[+mo+"-"+dy]=fmt(d)}}catch(e){}
@@ -1065,7 +1076,9 @@ function renderCal(){
  $("ttl").textContent=cursor.getFullYear()+"년 "+(cursor.getMonth()+1)+"월";
  $("cal").innerHTML=h+'</div>';
 }
-function render(){try{sessionStorage.setItem("tdh_sel",sel)}catch(e){}renderGoal();renderWeek();renderSide();renderCal();renderInbox();renderAhead();renderReceipt();renderQuote();renderStats();$("date").value=sel;var f=document.querySelector(".subf input");if(f)f.focus()}
+var editing=null,editDraft=null;
+function render(){var ef=document.querySelector(".tef");if(ef&&editing){editDraft={k:editing,t:ef.elements.t?ef.elements.t.value:"",m:ef.elements.m?ef.elements.m.value:"",fo:ef.contains(document.activeElement)}}try{sessionStorage.setItem("tdh_sel",sel)}catch(e){}renderGoal();renderWeek();renderSide();renderCal();renderInbox();renderAhead();renderReceipt();renderQuote();renderStats();$("date").value=sel;var f=document.querySelector(".subf input");if(f)f.focus();
+ var nf=document.querySelector(".tef");if(nf&&editing){if(editDraft&&editDraft.k===editing){if(nf.elements.t)nf.elements.t.value=editDraft.t;if(nf.elements.m)nf.elements.m.value=editDraft.m}var ti=nf.elements.t;if(ti&&document.activeElement!==ti&&(!editDraft||editDraft.fo)){ti.focus();try{ti.setSelectionRange(ti.value.length,ti.value.length)}catch(e){}}}}
 function find(id){return tasks.filter(function(t){return t.id==id})[0]}
 function sync(t){if(t&&t.subs&&t.subs.length)t.done=t.subs.every(function(s){return s.done})}
 function toggle(id){var t=find(id);if(t)t.done=!t.done;save();render();if(t&&t.done)roomWalk()}
@@ -1126,6 +1139,10 @@ document.addEventListener("click",function(e){
  if(x=q("data-ld")){ledger=ledger.filter(function(e2){return e2.id!=x.dataset.ld});lsave();render();return}
  if(x=q("data-fold")){upOpen=!upOpen;render();return}
  if(x=q("data-d")){tasks=tasks.filter(function(t){return t.id!=x.dataset.d});save();render();return}
+ if(x=q("data-te")){editing="t:"+x.dataset.te;editDraft=null;addingSub=null;resched=null;render();var e1=document.querySelector(".tef input");if(e1){e1.focus();try{e1.setSelectionRange(e1.value.length,e1.value.length)}catch(_){}}return}
+ if(x=q("data-se")){editing="s:"+x.dataset.se;editDraft=null;render();var e2=document.querySelector(".tef input");if(e2){e2.focus();try{e2.setSelectionRange(e2.value.length,e2.value.length)}catch(_){}}return}
+ if(x=q("data-ie")){editing="i:"+x.dataset.ie;editDraft=null;render();var e3=document.querySelector(".tef input");if(e3){e3.focus();try{e3.setSelectionRange(e3.value.length,e3.value.length)}catch(_){}}return}
+ if(x=q("data-tecancel")){editing=null;editDraft=null;render();return}
  if(x=q("data-ds")){var a=subOf(x.dataset.ds);a.t.subs=(a.t.subs||[]).filter(function(s){return s.id!=a.id});sync(a.t);save();render();return}
  if(x=q("data-ts")){var b=subOf(x.dataset.ts);(b.t.subs||[]).forEach(function(s){if(s.id==b.id)s.done=!s.done});sync(b.t);save();render();return}
  if(x=q("data-t")){toggle(x.dataset.t);return}
@@ -1141,6 +1158,12 @@ document.addEventListener("click",function(e){
 });
 document.addEventListener("change",function(e){var x=e.target;if(x.dataset&&x.dataset.rd&&x.value)setDate(x.dataset.rd,x.value)});
 document.addEventListener("submit",function(e){
+ var ef=e.target.closest&&e.target.closest("[data-tef],[data-sef]");
+ if(ef){e.preventDefault();var v0=ef.elements.t.value.trim();
+  if(v0){if(ef.dataset.sef){var so=subOf(ef.dataset.sef);(so.t.subs||[]).forEach(function(z){if(z.id==so.id)z.title=v0})}
+   else{var tk=find(ef.dataset.tef);if(tk){tk.title=v0;if(ef.elements.m)tk.time=ef.elements.m.value||""}}
+   save()}
+  editing=null;editDraft=null;render();return}
  var f=e.target.closest("[data-sf]");if(!f)return;
  e.preventDefault();
  var v=f.querySelector("input").value.trim(),t=find(f.dataset.sf);
@@ -2195,6 +2218,9 @@ document.addEventListener("click",function(e){
  var f=document.querySelector(".subf");if(!f||f.contains(e.target))return;
  var i=f.querySelector("input");if(i&&i.value.trim()!=="")return;
  addingSub=null;render()});
+
+/* ---- 수정 중 Esc 키로 취소 ---- */
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&editing){editing=null;editDraft=null;render()}});
 
 render();
 })();
