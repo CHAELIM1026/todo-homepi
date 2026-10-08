@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#fff2f2">
+<meta name="theme-color" content="#fff2f2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0f1b27" media="(prefers-color-scheme: dark)">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -918,6 +918,9 @@ body.fpo .fpop:not([hidden]),body.fpo .fpop:not([hidden]) *{pointer-events:auto!
 :root[data-theme="dark"] .dw.q textarea::placeholder{color:#6b8299}
 :root[data-theme="dark"] #pname{box-shadow:none}
 }
+/* ---- 다크모드: 크기맞춤(폰 한 화면 맞춤)으로 드러나는 맨 뒤 바탕도 어둡게 ---- */
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]).phome,:root:not([data-theme="light"]) body.phome{background:color-mix(in srgb,var(--accent) 16%,var(--bg))!important}}
+:root[data-theme="dark"].phome,:root[data-theme="dark"] body.phome{background:color-mix(in srgb,var(--accent) 16%,var(--bg))!important}
 </style>
 </head>
 <body>
