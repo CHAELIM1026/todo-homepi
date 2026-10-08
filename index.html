@@ -9,8 +9,10 @@
 <meta name="robots" content="noindex, nofollow, noarchive">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff2f2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0f1b27" media="(prefers-color-scheme: dark)">
-<link rel="icon" type="image/png" href="icon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" href="icon-dark-192.png" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" id="ati" href="apple-touch-icon.png">
+<script>try{if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)document.getElementById("ati").setAttribute("href","apple-touch-icon-dark.png")}catch(e){}</script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="투두 홈피">
@@ -269,6 +271,7 @@ select,textarea{font:inherit;color:inherit}
 .rmw{position:relative;width:120px;height:102px}
 .rmw>canvas{display:block;width:120px;height:102px;image-rendering:pixelated}
 .wk2{position:absolute;left:0;top:0;width:15px;height:27px;transition:transform .9s steps(9)}
+.av{position:relative}.av canvas.hel{position:absolute;left:0;top:0;display:none;pointer-events:none;transform:none}.wk2.hm .av canvas.hel{display:block}
 .av{transform-origin:50% 100%;animation:br 2.8s ease-in-out infinite}
 .av canvas{display:block;width:15px;height:27px;image-rendering:pixelated;transform:scaleX(var(--f,1))}
 .walking .av{animation:wb .36s steps(1) infinite}
@@ -936,7 +939,7 @@ body.fpo .fpop:not([hidden]),body.fpo .fpop:not([hidden]) *{pointer-events:auto!
         <div class="bio"><svg class="pen" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13l.8-3.2 7.4-7.4a1.4 1.4 0 0 1 2 0l.4.4a1.4 1.4 0 0 1 0 2L6.2 12.2 3 13z"/><path d="M10 3.6l2.4 2.4M3.8 9.8l2.4 2.4"/></svg><textarea id="pbio" name="home-intro" autocomplete="off" placeholder="한 줄 소개를 적어보세요" rows="1" maxlength="30" aria-label="한 줄 소개"></textarea></div>
       </div>
       <div class="cbox" id="cbox" role="group" aria-label="캐릭터 유리 상자"><button type="button" class="cbn" id="cback">복귀</button><div class="cgl" id="cgl"><div class="gp cgb"></div><div class="cfl"></div><div class="gp cgf"></div><svg class="ccr" viewBox="0 0 56 112" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(.9 .9)" opacity=".55"><path d="M39 48L28 42L20 36"/><path d="M31 64L18 66L8 62"/><path d="M28 81L16 88L10 98"/><path d="M26 54L30 44"/><path d="M19 67L22 78"/><path d="M33 72L36 62"/></g><g fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M39 48L28 42L20 36"/><path d="M31 64L18 66L8 62"/><path d="M28 81L16 88L10 98"/><path d="M26 54L30 44"/><path d="M19 67L22 78"/><path d="M33 72L36 62"/></g></svg><div class="csh" aria-hidden="true"><i style="left:44px;top:50px;--dx:12px;--dy:62px;--r:70deg;--dl:0s"></i><i style="left:36px;top:58px;--dx:6px;--dy:54px;--r:-90deg;--dl:.05s"></i><i style="left:46px;top:66px;--dx:16px;--dy:46px;--r:120deg;--dl:.1s"></i><i style="left:34px;top:72px;--dx:2px;--dy:38px;--r:-60deg;--dl:.08s"></i><i style="left:42px;top:80px;--dx:10px;--dy:30px;--r:100deg;--dl:.14s"></i><i style="left:38px;top:88px;--dx:-4px;--dy:22px;--r:-130deg;--dl:.12s"></i><i style="left:48px;top:90px;--dx:14px;--dy:20px;--r:80deg;--dl:.18s"></i></div></div><button type="button" class="cbn" id="chome">집순이</button></div>
-      <div class="roomwrap"><div class="room" id="roomw" aria-label="미니룸"><canvas id="road" width="136" height="80"></canvas><div class="wdim" id="wdim"></div><canvas id="wfx" width="136" height="80"></canvas><div class="shops"><button type="button" class="shop sl1" data-shop="cloth" aria-label="옷 가게"><canvas width="20" height="20"></canvas></button><button type="button" class="shop sl2" data-shop="hair" aria-label="미용실"><canvas width="20" height="20"></canvas></button></div><div class="rmw" id="rmw"><canvas id="room" width="52" height="46"></canvas><div class="wk2" id="wk2"><canvas class="em" width="7" height="7"></canvas><div class="av"><canvas id="chr" width="24" height="52"></canvas></div></div></div><div class="shops"><button type="button" class="shop sr1" data-shop="furn" aria-label="가구점"><canvas width="20" height="20"></canvas></button><button type="button" class="shop sr2" data-shop="wall" aria-label="벽지 가게"><canvas width="20" height="20"></canvas></button></div><div class="shopp" id="shopp" hidden></div></div></div>
+      <div class="roomwrap"><div class="room" id="roomw" aria-label="미니룸"><canvas id="road" width="136" height="80"></canvas><div class="wdim" id="wdim"></div><canvas id="wfx" width="136" height="80"></canvas><div class="shops"><button type="button" class="shop sl1" data-shop="cloth" aria-label="옷 가게"><canvas width="20" height="20"></canvas></button><button type="button" class="shop sl2" data-shop="hair" aria-label="미용실"><canvas width="20" height="20"></canvas></button></div><div class="rmw" id="rmw"><canvas id="room" width="52" height="46"></canvas><div class="wk2" id="wk2"><canvas class="em" width="7" height="7"></canvas><div class="av"><canvas id="chr" width="24" height="52"></canvas><canvas class="hel" id="hel" width="24" height="52" aria-hidden="true"></canvas></div></div></div><div class="shops"><button type="button" class="shop sr1" data-shop="furn" aria-label="가구점"><canvas width="20" height="20"></canvas></button><button type="button" class="shop sr2" data-shop="wall" aria-label="벽지 가게"><canvas width="20" height="20"></canvas></button></div><div class="shopp" id="shopp" hidden></div></div></div>
       <div class="deco">
         <div class="dl"><div class="dw q"><div class="qh"><b>오늘의 한 줄</b><svg class="fl" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.8" r="3.6"/><circle cx="12" cy="5.8" r="3.6" transform="rotate(72 12 12)"/><circle cx="12" cy="5.8" r="3.6" transform="rotate(144 12 12)"/><circle cx="12" cy="5.8" r="3.6" transform="rotate(216 12 12)"/><circle cx="12" cy="5.8" r="3.6" transform="rotate(288 12 12)"/><circle class="fc" cx="12" cy="12" r="2.6"/></svg><select id="pmood" aria-label="오늘의 기분"><option value="">☺</option><option>😊</option><option>🥰</option><option>😐</option><option>😴</option><option>😢</option><option>😡</option><option>💪</option><option>🔥</option></select><span class="qh-r"><span class="coinb" id="coinBox" title="내 코인"><i class="coin-i"></i><b id="coinN">0</b></span><button type="button" class="attb" id="attBtn">출석</button></span></div><div class="qt" id="qtext" aria-label="오늘의 명언"></div></div><div class="song"><svg class="lp" viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="29" fill="#17171c"/><circle class="lpg" cx="30" cy="30" r="25"/><circle class="lpg" cx="30" cy="30" r="21"/><circle class="lpg" cx="30" cy="30" r="17"/><circle class="lpl" cx="30" cy="30" r="11"/><circle class="lpr" cx="30" cy="30" r="8"/><circle cx="30" cy="30" r="1.8" fill="#17171c"/><g class="lph" transform="translate(46 13) scale(.6)"><rect x="2" width="2" height="2"/><rect x="6" width="2" height="2"/><rect y="2" width="10" height="2"/><rect x="2" y="4" width="6" height="2"/><rect x="4" y="6" width="2" height="2"/></g><rect class="lph" x="46.5" y="21" width="1.2" height="1.2"/><rect class="lph" x="44.6" y="23.8" width="1.2" height="1.2"/></svg><div class="dw tk"><div class="sgt"><button type="button" class="pb" id="pplay" aria-label="일시정지"></button><div class="mq" id="mq"><span></span></div><input type="text" id="psong" placeholder="노래 제목" maxlength="40" aria-label="지금 듣는 노래" autocomplete="off" hidden></div></div></div></div>
         <div class="dr"><div class="dw hw"><div class="ddw"><svg viewBox="0 0 100 90" aria-hidden="true"><defs><radialGradient id="hg" cx="50%" cy="46%" r="55%"><stop offset="0" class="h0"/><stop offset=".5" class="h1"/><stop offset="1" class="h2"/></radialGradient><filter id="hb" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7.5"/></filter></defs><rect x="10" y="12" width="80" height="66" rx="16" fill="url(#hg)" filter="url(#hb)"/></svg><span class="ddt" id="ddv">D-?</span><button type="button" class="ddp" id="pdd" aria-label="디데이 날짜 선택"></button><div class="ddcal" id="ddcal" hidden></div></div><div class="dcol"><input type="text" id="pddl" placeholder="이름" maxlength="12" aria-label="디데이 이름"></div></div><div class="sw" id="sw" role="group" aria-label="테마 색"></div></div><div class="rslot rs-home"></div>
@@ -1399,7 +1402,7 @@ function drawChar(){drawU($("chr").getContext("2d"),fine(odOf(),hsOf(),feOf(),pd
 var SP={cloth:["#f48fb1","#d96a90"],hair:["#b39ddb","#8d73c4"],furn:["#e53935","#b71c1c"],wall:["#66bb6a","#3f9a4a"]},
  GL={cloth:["x...x","xx.xx","xxxxx",".xxx.",".xxx."],hair:["xxxxx",".x.x.",".x.x.",".x.x.",".x.x."],furn:["x....","x....","xxxxx","x...x","x...x"],wall:["xxxxx","xxxxx","..x..","..x..","..x.."]},
  CAPS={cloth:[8,12,16,18,20,20,20,18],hair:[4,8,12,14,16,18,18,18,16],furn:[12,16,18,20,20,20,18],wall:[6,10,14,16,18,18,18,16]};
-function drawShop(c,k){var g=c.getContext("2d"),p=SP[k],cw=CAPS[k],F="#8a5a3a",G="#fffdf6";function R(x,y,w,h,col){g.fillStyle=col;g.fillRect(x,y,w,h)}
+function drawShop(c,k){if(isDk()&&k!=="gate"&&GL[k]){return drawShip(c,k)}var g=c.getContext("2d"),p=SP[k],cw=CAPS[k],F="#8a5a3a",G="#fffdf6";function R(x,y,w,h,col){g.fillStyle=col;g.fillRect(x,y,w,h)}
  var y0=9-cw.length;cw.forEach(function(w,i){R(10-w/2,y0+i,w,1,i===cw.length-1?p[1]:p[0])});
  [[4,y0+2],[9,y0+1],[13,y0+3],[7,y0+4]].forEach(function(s){R(s[0],s[1],2,2,"#ffffff")});
  if(season()==="winter"){var SW="#ffffff",SB="#cfe2f6";R(10-cw[0]/2,y0,cw[0],1,SW);R(10-cw[1]/2,y0+1,cw[1],1,SW);R(10-cw[2]/2,y0+2,cw[2],1,SW);for(var qi=0;qi<cw[3];qi++){var qx=10-cw[3]/2+qi;if(qi%5<3){R(qx,y0+3,1,1,SW);if(qi%5===1)R(qx,y0+4,1,1,SB)}else R(qx,y0+3,1,1,SB)}R(10-cw[2]/2,y0+2,1,1,SB);R(10+cw[2]/2-1,y0+2,1,1,SB)}
@@ -1483,12 +1486,75 @@ function walk(pts,done,flip){var W=$("wk2"),i=0,last=null;W.classList.add("walki
  (function go(){if(i>=pts.length){W.classList.remove("walking");W.style.transition="";if(done)done();return}
   var g=pts[i++],d=last?Math.hypot(g[0]-last[0],g[1]-last[1]):40,ms=Math.max(80,d*6);if(flip&&last&&Math.abs(g[0]-last[0])>1)W.style.setProperty("--f",g[0]<last[0]?-1:1);last=g;
   W.style.transition="transform "+ms+"ms steps(10)";W.style.transform="translate("+(g[0]-70)+"px,"+(g[1]-58)+"px)";setTimeout(go,ms+20)})()}
-function goShop(k){if(wlk)return;if(deskOn()&&inBox){CB.classList.remove("hit");void CB.offsetWidth;CB.classList.add("hit");setTimeout(function(){CB.classList.remove("hit")},420);frToast("유리상자 안에서는 나갈 수 없어요. 먼저 '집순이' 버튼으로 캐릭터를 집으로 보내 주세요");return}wlk=1;var pts=(atShop?ROUTES[atShop].slice(0,-1).reverse():[]).concat(ROUTES[k]);pend=null;shopK=null;renderShop();
+function goShop(k){if(wlk)return;if(deskOn()&&inBox){CB.classList.remove("hit");void CB.offsetWidth;CB.classList.add("hit");setTimeout(function(){CB.classList.remove("hit")},420);frToast("유리상자 안에서는 나갈 수 없어요. 먼저 '집순이' 버튼으로 캐릭터를 집으로 보내 주세요");return}wlk=1;if(isDk())$("wk2").classList.add("hm");var pts=(atShop?ROUTES[atShop].slice(0,-1).reverse():[]).concat(ROUTES[k]);pend=null;shopK=null;renderShop();
  walk(pts,function(){wlk=0;atShop=k;shopK=k;renderShop()})}
 function goHome(cb){var pts=atShop?ROUTES[atShop].slice(0,-1).reverse().concat([homeF()]):[];shopK=null;pend=null;renderShop();wlk=1;
- walk(pts,function(){wlk=0;atShop=null;place(HOME);if(typeof cb==="function")cb()})}
+ walk(pts,function(){wlk=0;atShop=null;$("wk2").classList.remove("hm");place(HOME);if(typeof cb==="function")cb()})}
+
+function isDk(){var t=document.documentElement.getAttribute("data-theme");return t==="dark"||(t!=="light"&&!!(window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))}
+function drawShip(c,k){var g=c.getContext("2d"),p=SP[k];g.clearRect(0,0,20,20);function R(x,y,w,h,col){g.fillStyle=col;g.fillRect(x,y,w,h)}
+ var NEON=p[0],NEOND=p[1];
+ R(10,0,1,2,"#cfd8ea");R(10,0,1,1,NEON);
+ [[2,6],[3,10],[4,12],[5,12],[6,12],[7,12]].forEach(function(r){R(10-r[1]/2,r[0],r[1],1,"#8fe9ff")});
+ R(6,3,3,1,"#e6fbff");R(5,4,2,1,"#e6fbff");R(4,5,1,2,"#e6fbff");
+ R(10-6,7,12,1,"#58c4e0");R(4,4,1,1,"#3aa7c9");R(15,4,1,1,"#3aa7c9");R(15,5,1,3,"#3aa7c9");
+ g.fillStyle="#12204a";GL[k].forEach(function(r,j){for(var i=0;i<5;i++)if(r[i]==="x")g.fillRect(8+i,3+j,1,1)});
+ R(2,8,16,1,"#c7d0e4");R(0,9,20,1,"#9aa5be");R(0,10,20,1,"#6f7a94");R(2,11,16,1,"#4d566e");R(6,12,8,1,"#394058");
+ for(var i=1;i<20;i+=3){R(i,10,1,1,i%2?NEON:"#ffffff")}
+ R(0,9,1,1,"#c7d0e4");R(19,9,1,1,"#c7d0e4");
+ R(8,13,4,1,NEOND);R(9,14,2,1,NEON);R(9,15,2,1,"#ffffff");
+ R(4,12,1,3,"#8d98b0");R(3,15,3,1,"#8d98b0");R(15,12,1,3,"#8d98b0");R(14,15,3,1,"#8d98b0");
+ R(1,17,18,1,"#1c2548");R(0,18,20,1,"#121a3a");R(2,17,16,1,NEON);R(1,18,1,1,NEON);R(18,18,1,1,NEON);R(6,18,1,1,NEOND);R(13,18,1,1,NEOND)}
+function drawRoadCyber(){var c=$("road").getContext("2d");c.imageSmoothingEnabled=false;c.clearRect(0,0,136,80);
+ function F(x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h)}var RW2=5;
+ function pr(a,b,g,col){var x1=Math.min(a[0],b[0])/2-RW2/2-g,x2=Math.max(a[0],b[0])/2+RW2/2+g,y1=Math.min(a[1],b[1])/2-RW2/2-g,y2=Math.max(a[1],b[1])/2+RW2/2+g;F(Math.round(x1),Math.round(y1),Math.round(x2-x1),Math.round(y2-y1),col)}
+ var segs=[],seen={},CL={cloth:"#22e6ff",hair:"#ff2fd1",furn:"#ffd23f",wall:"#7dff6a"};
+ for(var k in ROUTES0){var R0=ROUTES0[k];for(var i=0;i<R0.length-1;i++){var key=R0[i]+"|"+R0[i+1]+"|"+R0[i+1]+"|"+R0[i];if(seen[R0[i]+"|"+R0[i+1]])continue;seen[R0[i]+"|"+R0[i+1]]=1;segs.push([R0[i],R0[i+1],CL[k]||"#22e6ff"])}}
+ segs.forEach(function(s){pr(s[0],s[1],2,"rgba(80,120,255,.16)")});
+ segs.forEach(function(s){pr(s[0],s[1],1,s[2])});
+ segs.forEach(function(s){pr(s[0],s[1],0,"#0c1230")});
+ segs.forEach(function(s){var A=s[0],B=s[1],L=Math.hypot(B[0]-A[0],B[1]-A[1])/2;for(var d=1;d<L;d+=3){var q=d/L,cx=Math.round((A[0]+(B[0]-A[0])*q)/2),cy=Math.round((A[1]+(B[1]-A[1])*q)/2);F(cx,cy,1,1,s[2]);if(Math.round(d)%9===1){F(cx+(B[1]===A[1]?0:1),cy+(B[0]===A[0]?0:1),1,1,"#ffffff")}}
+  for(var e=2;e<L;e+=7){var q2=e/L,ex=Math.round((A[0]+(B[0]-A[0])*q2)/2),ey=Math.round((A[1]+(B[1]-A[1])*q2)/2);if(B[1]===A[1])F(ex,ey-1,1,1,"#27315f"),F(ex,ey+1,1,1,"#27315f");else F(ex-1,ey,1,1,"#27315f"),F(ex+1,ey,1,1,"#27315f")}});
+ var corners={};ROUTES0&&Object.keys(ROUTES0).forEach(function(k){ROUTES0[k].forEach(function(p){corners[p[0]+","+p[1]]=p})});
+ Object.keys(corners).forEach(function(k){var p=corners[k],x=Math.round(p[0]/2),y=Math.round(p[1]/2);F(x-1,y-1,3,3,"#1a2352");F(x,y,1,1,"#ffffff")})
+ ;(function spaceDeco(){var SN=season(),sd=20261008;function rnd(){sd=(sd*1103515245+12345)&2147483647;return sd/2147483647}
+  function A(x,y,col){F(x,y,1,1,col)}
+  function inRoad(x,y,m){return segs.some(function(s){var a=s[0],b=s[1],x1=Math.min(a[0],b[0])/2-RW2/2-m,x2=Math.max(a[0],b[0])/2+RW2/2+m,y1=Math.min(a[1],b[1])/2-RW2/2-m,y2=Math.max(a[1],b[1])/2+RW2/2+m;return x>=x1&&x<=x2&&y>=y1&&y<=y2})}
+  var ends=[];Object.keys(ROUTES0).forEach(function(k){var R=ROUTES0[k];ends.push([R[0][0]/2,R[0][1]/2]);ends.push([R[R.length-1][0]/2,R[R.length-1][1]/2])});
+  function ok(x,y,r){if(x<4||y<4||x>131||y>73)return false;if(x>=31&&x<=105&&y<=65)return false;if(inRoad(x,y,3))return false;for(var i=0;i<ends.length;i++)if(Math.hypot(ends[i][0]-x,ends[i][1]-y)<10)return false;for(var j=0;j<pl.length;j++)if(Math.hypot(pl[j][0]-x,pl[j][1]-y)<r)return false;return true}
+  var pl=[];
+  function pts(n,r,fn){var t=0;while(n>0&&t++<3000){var sg=segs[Math.floor(rnd()*segs.length)],a=sg[0],b=sg[1],l=Math.hypot(b[0]-a[0],b[1]-a[1])/2,q=rnd(),nx=-(b[1]-a[1])/2/l,ny=(b[0]-a[0])/2/l,side=rnd()<.5?-1:1,lat=side*(RW2/2+3+rnd()*11),x=Math.round((a[0]+(b[0]-a[0])*q)/2+nx*lat),y=Math.round((a[1]+(b[1]-a[1])*q)/2+ny*lat);if(ok(x,y,r)){pl.push([x,y]);fn(x,y);n--}}}
+  function halo(x,y,r,col){return;for(var yy=-r;yy<=r;yy++)for(var xx=-r;xx<=r;xx++){var d=Math.hypot(xx,yy);if(d<=r&&!inRoad(x+xx,y+yy,1)&&!(x+xx>=29&&x+xx<=107&&y+yy<=66))F(x+xx,y+yy,1,1,col)}}
+  function spr(rows,pal,x0,y0){rows.forEach(function(r,j){for(var i=0;i<r.length;i++){var ch=r[i];if(ch!=="."&&pal[ch])A(x0+i,y0+j,pal[ch])}})}
+  if(SN==="spring"){var BL=[".q.q.","qpcpq",".qpq.","..g..",".gg.."],PC=[["#ff6ad5","#b66bff","rgba(255,106,213,.14)"],["#7ee8ff","#5b8cff","rgba(110,200,255,.14)"],["#c58bff","#7d5cff","rgba(180,130,255,.14)"],["#ffb3f0","#ff6ad5","rgba(255,150,230,.14)"]];
+   pts(20,7,function(x,y){var c=PC[Math.floor(rnd()*4)];halo(x,y-2,5,c[2]);spr(BL,{p:c[0],q:c[1],c:"#fff6a8",g:"#29d3b0"},x-2,y-3)});
+   pts(34,3,function(x,y){var c=PC[Math.floor(rnd()*4)];A(x,y,c[0]);A(x,y+1,"#29d3b0");if(rnd()<.5){A(x-1,y,c[1]);A(x+1,y,c[1])}})}
+  else if(SN==="summer"){var ST=["..b..",".bbb.","..b..","..s..",".ss..","..s.."],CP=["..ccc..",".cwwwc.","ccccccc","..sss..","..sss.."],GC=[["#7dffb0","#1fae8c","rgba(90,255,170,.15)"],["#22e6ff","#1a8fb5","rgba(40,220,255,.15)"],["#c8ff5a","#5aa82a","rgba(190,255,90,.15)"],["#d58bff","#7a45c9","rgba(200,130,255,.15)"]];
+   pts(12,8,function(x,y){var c=GC[Math.floor(rnd()*4)];halo(x,y-2,5,c[2]);spr(ST,{b:c[0],s:c[1]},x-2,y-5);A(x-2,y-3,c[0]);A(x+2,y-4,c[0])});
+   pts(12,7,function(x,y){var c=GC[Math.floor(rnd()*4)];halo(x,y-2,4,c[2]);spr(CP,{c:c[0],w:"#ffffff",s:c[1]},x-3,y-4)});
+   pts(34,3,function(x,y){var c=GC[Math.floor(rnd()*4)];A(x,y,c[0]);A(x,y+1,c[1])})}
+  else if(SN==="autumn"){function rock(x,y,r){for(var yy=-r;yy<=r;yy++)for(var xx=-r;xx<=r;xx++){var u=xx/r,v=yy/(r*.85),e=u*u+v*v;if(e<=1.05){var l=xx+yy;A(x+xx,y+yy,e>.7?"#2e2733":l<-r*.6?"#a39099":l>r*.5?"#4c4350":"#7c6d78")}}
+    A(x-1,y+1,"#ff8a2b");if(r>=3){A(x,y,"#ff5a1f");A(x+1,y-1,"#ffc14d");A(x-2,y,"#ff8a2b")}}
+   pts(14,8,function(x,y){halo(x,y,5,"rgba(255,130,50,.10)");rock(x,y,2+Math.floor(rnd()*2))});
+   pts(44,3,function(x,y){A(x,y,rnd()<.5?"#8f7e8a":"#ff8a2b");if(rnd()<.4)A(x+1,y,"#4c4350")})}
+  else{var CR=["..i..",".iwi.","iwwwi",".iwi.","..i.."],CM=[["#ffffff","#7ee8ff"],["#dff6ff","#9ad9ff"]];
+   pts(15,8,function(x,y){halo(x,y,5,"rgba(150,220,255,.12)");spr(CR,{i:"#8fe3ff",w:"#ffffff"},x-2,y-2)});
+   pts(24,5,function(x,y){A(x,y,"#ffffff");A(x-1,y,"rgba(190,235,255,.8)");A(x+1,y,"rgba(190,235,255,.8)");A(x,y-1,"rgba(190,235,255,.8)");A(x,y+1,"rgba(190,235,255,.8)")});
+   pts(46,3,function(x,y){A(x,y,rnd()<.5?"#ffffff":"#9ad9ff")});
+   [[10,60],[124,16]].forEach(function(p){for(var k=0;k<7;k++)A(p[0]+k,p[1]-k,k===6?"#ffffff":"rgba(160,225,255,"+(.15+k*.1)+")")}) }
+ })();
+}
+
+function drawHel(){var c=$("hel");if(!c)return;var g=c.getContext("2d");g.clearRect(0,0,24,52);function P(x,y,col){g.fillStyle=col;g.fillRect(x,y,1,1)}
+ var cx=11.5,cy2=19,rx=11.4,ry=14.6;
+ for(var y=3;y<=34;y++)for(var x=0;x<24;x++){var u=(x-cx)/rx,v=(y-cy2)/ry,e=u*u+v*v;if(e<=1.0){var inner=((x-cx)/(rx-1.3))*((x-cx)/(rx-1.3))+((y-cy2)/(ry-1.3))*((y-cy2)/(ry-1.3));if(inner>1)P(x,y,e>.9?"rgba(200,245,255,.95)":"rgba(170,235,255,.85)");else P(x,y,"rgba(120,215,255,.15)")}}
+ [[5,6],[4,8],[4,10],[5,12]].forEach(function(p){P(p[0],p[1]+1,"rgba(255,255,255,.95)")});[[7,5],[8,4]].forEach(function(p){P(p[0],p[1]+1,"rgba(255,255,255,.95)")});
+ P(17,7,"rgba(255,255,255,.7)");P(18,9,"rgba(255,255,255,.55)");P(19,11,"rgba(255,255,255,.4)");
+ for(var x2=5;x2<=18;x2++){P(x2,32,"#8d98b0");P(x2,33,x2%4===1?"#22e6ff":"#c7d0e4");P(x2,34,"#4d566e")}
+ P(4,33,"#8d98b0");P(19,33,"#8d98b0");P(11,33,"#ff2fd1");P(12,33,"#ff2fd1");
+ P(2,24,"#8d98b0");P(3,25,"#c7d0e4");P(20,24,"#8d98b0");P(19,25,"#c7d0e4")}
 function season(){var m=new Date().getMonth()+1;return m>=3&&m<=5?"spring":m>=6&&m<=8?"summer":m>=9&&m<=11?"autumn":"winter"}
-function drawRoad(){var c=$("road").getContext("2d");c.imageSmoothingEnabled=false;function F(x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h)}
+function drawRoad(){if(isDk())return drawRoadCyber();var c=$("road").getContext("2d");c.imageSmoothingEnabled=false;function F(x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h)}
  var W=136,Hh=80,occ=new Uint8Array(W*Hh),placed=[],d=new Date(),sd=d.getFullYear()*400+d.getMonth()*31+d.getDate();function rnd(){sd=(sd*1103515245+12345)&2147483647;return sd/2147483647}
 var GA=["#d9d4c7","#b0aa9c","#807a6e"],GB=["#cdc8bb","#a09b8e","#736d62"],GC=["#c4c7cc","#9a9fa8","#6e737c"],BB=["#bec6d2","#8e98a8","#677282"],GD=["#b4b2ac","#868379","#5f5c53"];
  var PAL={plain:[GB,GD],stone:[GA,GB,GC],dirt:[GC,BB],brick:[BB,GA],plank:[GD,GC,GB]},STEP={plain:5,stone:5.4,dirt:8.4,brick:5.4,plank:10};
@@ -1565,8 +1631,9 @@ var sn=season();
   while(na<=ac2+L2){var tq=(na-ac2)/L2,px2=(p1[0]+(p2[0]-p1[0])*tq)/2,py2=(p1[1]+(p2[1]-p1[1])*tq)/2,nx3=-(p2[1]-p1[1]),ny3=(p2[0]-p1[0]),nl=Math.hypot(nx3,ny3)||1,sg2=rnd()<.5?-1:1,off2=5+Math.floor(rnd()*3);
    if(rnd()<.85)deco(Math.round(px2+nx3/nl*off2*sg2),Math.round(py2+ny3/nl*off2*sg2));na+=(sn==="spring"||sn==="summer"?13:5)+Math.floor(rnd()*(sn==="spring"||sn==="summer"?9:4))}
   ac2+=L2}}}
-drawRoom();drawChar();drawEmo();place(HOME);drawRoad();$("pmd").textContent=todayStr.slice(5).replace("-",".");
-Array.prototype.forEach.call(document.querySelectorAll(".shop"),function(b){drawShop(b.querySelector("canvas"),b.dataset.shop)});
+drawHel();drawRoom();drawChar();drawEmo();place(HOME);drawRoad();$("pmd").textContent=todayStr.slice(5).replace("-",".");
+function drawShops(){Array.prototype.forEach.call(document.querySelectorAll(".shop"),function(b){drawShop(b.querySelector("canvas"),b.dataset.shop)})}drawShops();
+try{var mqD=window.matchMedia("(prefers-color-scheme:dark)"),onTh=function(){drawRoad();drawShops();var gi=$("gateIcon");if(gi)drawShop(gi,"furn");if(!isDk())$("wk2").classList.remove("hm");try{renderShop()}catch(e){}};if(mqD.addEventListener)mqD.addEventListener("change",onTh);else if(mqD.addListener)mqD.addListener(onTh)}catch(e){}
 var WXL=[["sun","맑음"],["cloud","흐림"],["rain","비"],["snow","눈"]],WXI={
  sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg>',
  cloud:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 18.5h10a4 4 0 0 0 .6-7.95A5.6 5.6 0 0 0 6.9 9.6 4.5 4.5 0 0 0 7 18.5z"/></svg>',
