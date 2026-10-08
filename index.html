@@ -903,18 +903,20 @@ body.fpo .fpop:not([hidden]),body.fpo .fpop:not([hidden]) *{pointer-events:auto!
 .under .inbox{width:240px;height:252px;box-sizing:border-box;display:flex;flex-direction:column}
 .under .inbox #inlist{flex:1 1 0;min-height:0;max-height:none;overflow-y:auto}
 }
-/* ---- 컴퓨터 다크모드: 미니홈피 물결 삭제, 오늘의 한 줄 글자를 어두운 톤으로 ---- */
-@media(min-width:821px) and (prefers-color-scheme:dark){
+/* ---- 다크모드(폰·컴퓨터): 미니홈피 물결 삭제, 오늘의 한 줄 글자를 어두운 톤으로, 이름상자 그림자 삭제 ---- */
+@media(prefers-color-scheme:dark){
 :root:not([data-theme="light"]) .skin::before{background-image:radial-gradient(ellipse 70px 24px at 78% 20%,rgba(255,255,255,.9),transparent 70%),radial-gradient(ellipse 100px 30px at 94% 78%,rgba(255,255,255,.8),transparent 70%),radial-gradient(ellipse 60px 20px at 52% 85%,rgba(255,255,255,.7),transparent 70%);background-size:auto,auto,auto;background-repeat:no-repeat;background-position:0 0;animation:none}
 :root:not([data-theme="light"]) .dw.q .qh>b,.dw.q .qt,.dw.q textarea{color:#22364a}
 :root:not([data-theme="light"]) .dw.q .qh select{color:#3f6486}
 :root:not([data-theme="light"]) .dw.q textarea::placeholder{color:#6b8299}
+:root:not([data-theme="light"]) #pname{box-shadow:none}
 }
-@media(min-width:821px){
+@media all{
 :root[data-theme="dark"] .skin::before{background-image:radial-gradient(ellipse 70px 24px at 78% 20%,rgba(255,255,255,.9),transparent 70%),radial-gradient(ellipse 100px 30px at 94% 78%,rgba(255,255,255,.8),transparent 70%),radial-gradient(ellipse 60px 20px at 52% 85%,rgba(255,255,255,.7),transparent 70%);background-size:auto,auto,auto;background-repeat:no-repeat;background-position:0 0;animation:none}
 :root[data-theme="dark"] .dw.q .qh>b,.dw.q .qt,.dw.q textarea{color:#22364a}
 :root[data-theme="dark"] .dw.q .qh select{color:#3f6486}
 :root[data-theme="dark"] .dw.q textarea::placeholder{color:#6b8299}
+:root[data-theme="dark"] #pname{box-shadow:none}
 }
 </style>
 </head>
@@ -1145,7 +1147,7 @@ document.addEventListener("click",function(e){
  if(x=q("data-fm")){var fp2=x.dataset.fm.split(":");smode[fp2[0]]=fp2[1];fmsg="";pend=null;renderShop();return}
  if(x=q("data-ocol")){prof.oc=+x.dataset.ocol;drawChar();saveProf();renderShop();return}
  if(x=q("data-skin")){prof.sk=+x.dataset.skin;drawChar();saveProf();renderShop();return}
- if(x=q("data-brow")){prof.bc=+x.dataset.brow;drawChar();saveProf();renderShop();return}
+ if(x=q("data-brow")){frBegin();prof.bc=+x.dataset.brow;if(prof.sb&&frTotal()===0){delete prof.sb}drawChar();saveProf();frCoinUi();renderShop();return}
  if(x=q("data-hcol")){prof.hair=+x.dataset.hcol;drawChar();saveProf();renderShop();return}
  if(x=q("data-wcol")){prof.wallC=+x.dataset.wcol;drawRoom();saveProf();renderShop();return}
  if(x=q("data-fcol")){prof.floorC=+x.dataset.fcol;drawRoom();saveProf();renderShop();return}
@@ -1870,7 +1872,7 @@ function frRenderL(){var p=$("fpopL"),h=FPX+'<h4 style="margin-top:0">내 친구
  p.innerHTML=h;if(!p.hidden)frClamp(p)}
 $("fpopL").addEventListener("click",function(e){if(e.target.closest(".fpx")){e.stopPropagation();frPops();return}var b=e.target.closest("[data-act]");if(!b)return;e.stopPropagation();var a=b.getAttribute("data-act"),id=b.getAttribute("data-id"),nm=b.getAttribute("data-nm")||"";
  if(a==="visit"){frOpenFV(id)}
- else if(a==="rm"){frAsk('<b>'+nm+'</b>님을 친구에서 삭제할까요?',"삭제",true).then(function(ok){if(ok)API("remove_friend",{p_id:id}).then(function(){frToast("친구에서 삭제했어요");frLoadL()})})}
+ else if(a==="rm"){frAsk('<b>'+nm+'</b>님을 친구에서 삭제할까요?',"삭제",true).then(function(ok){if(ok){delete FRS.sentIds[id];FRS.friends=(FRS.friends||[]).filter(function(f){return f.id!==id});frRenderL();API("remove_friend",{p_id:id}).then(function(){frToast("친구에서 삭제했어요");frLoadL()}).catch(function(){frToast("삭제하지 못했어요. 다시 시도해 주세요");frLoadL()})}})}
  else if(a==="blk"){frBlock(id,nm).then(function(ok){if(ok)frLoadL()})}
  else if(a==="cnl"){API("cancel_request",{p_to:id}).then(function(){delete FRS.sentIds[id];frLoadL()})}
  else if(a==="unb"){API("unblock_user",{p_id:id}).then(function(){frToast("차단을 해제했어요");frLoadL()})}});
@@ -2117,16 +2119,16 @@ function frWkCheck(){var c=cn(),gain=0;tasks.forEach(function(t){if(t.done){if(!
  if(gain>0){saveProf();frCoinUi();frToast("🪙 +"+gain+" 할 일 완료 (오늘 "+c.wk+"/"+CN_CAP.wk+")")}}
 
 /* ---------- 상점: 눌러서 입어 보고 → '구매'를 눌러야 내 것이 돼요 ---------- */
-var BOUGHT=0,SPRICE=[3,5,5,6,10,10],OWNK=["od","fe","pd","hs","ws","fs"];
+var BOUGHT=0,SPRICE=[3,5,5,6,10,10,1],OWNK=["od","fe","pd","hs","ws","fs","bc"];
 function frOwn(){var o=prof.own;if(!o||typeof o!=="object")o=prof.own={};OWNK.concat(["fu"]).forEach(function(k){if(!Array.isArray(o[k]))o[k]=[]});return o}
 function frOwnAdd(k,v){var o=frOwn();if(o[k].indexOf(v)<0)o[k].push(v)}
-function frOwnAllWorn(){var c=frSlots(prof);for(var i=0;i<6;i++)frOwnAdd(OWNK[i],c[i]);placed().forEach(function(id){frOwnAdd("fu",id)})}
-function frSlots(p){return withProf(p,function(){return [odOf(),feOf(),pdOf(),hsOf(),prof.wallS==null?3:prof.wallS,prof.floorS||0]})}
-function frShopSnap(){return JSON.stringify([prof.od,prof.fe,prof.pd,prof.hs,prof.wallS,prof.floorS,prof.furn])}
-function frBegin(){if(!prof.sb){frOwnAllWorn();prof.sb={od:prof.od,fe:prof.fe,pd:prof.pd,hs:prof.hs,wallS:prof.wallS,floorS:prof.floorS,furn:placed().slice(),fpos:JSON.parse(JSON.stringify(prof.fpos||{}))}}}
-function frTotal(){var b=prof.sb;if(!b)return 0;var c=frSlots(prof),o=frSlots(b),t=0;var ow=frOwn();for(var i=0;i<6;i++)if(c[i]!==o[i]&&ow[OWNK[i]].indexOf(c[i])<0)t+=SPRICE[i];placed().forEach(function(id){if(b.furn.indexOf(id)<0&&ow.fu.indexOf(id)<0)t+=10});return t}
+function frOwnAllWorn(){var c=frSlots(prof);for(var i=0;i<7;i++)frOwnAdd(OWNK[i],c[i]);placed().forEach(function(id){frOwnAdd("fu",id)})}
+function frSlots(p){return withProf(p,function(){return [odOf(),feOf(),pdOf(),hsOf(),prof.wallS==null?3:prof.wallS,prof.floorS||0,bcOf()]})}
+function frShopSnap(){return JSON.stringify([prof.od,prof.fe,prof.pd,prof.hs,prof.wallS,prof.floorS,prof.bc,prof.furn])}
+function frBegin(){if(!prof.sb){frOwnAllWorn();prof.sb={od:prof.od,fe:prof.fe,pd:prof.pd,hs:prof.hs,wallS:prof.wallS,floorS:prof.floorS,bc:prof.bc,furn:placed().slice(),fpos:JSON.parse(JSON.stringify(prof.fpos||{}))}}}
+function frTotal(){var b=prof.sb;if(!b)return 0;var c=frSlots(prof),o=frSlots(b),t=0;var ow=frOwn();for(var i=0;i<7;i++)if(c[i]!==o[i]&&ow[OWNK[i]].indexOf(c[i])<0)t+=SPRICE[i];placed().forEach(function(id){if(b.furn.indexOf(id)<0&&ow.fu.indexOf(id)<0)t+=10});return t}
 function frRevert(){var b=prof.sb;if(!b)return false;
- ["od","fe","pd","hs","wallS","floorS"].forEach(function(k){if(b[k]===undefined||b[k]===null)delete prof[k];else prof[k]=b[k]});
+ ["od","fe","pd","hs","wallS","floorS","bc"].forEach(function(k){if(b[k]===undefined||b[k]===null)delete prof[k];else prof[k]=b[k]});
  prof.furn=b.furn.slice();var fp=prof.fpos||{};Object.keys(fp).forEach(function(id){if(b.furn.indexOf(id)<0)delete fp[id]});b.furn.forEach(function(id){if(!fp[id]&&b.fpos[id])fp[id]=b.fpos[id]});prof.fpos=fp;
  delete prof.sb;saveProf();try{drawChar();drawRoom()}catch(e){}renderShop();return true}
 var _pick=pick;
@@ -2169,7 +2171,7 @@ function frShopUi(){var p=$("shopp");if(!p||p.hidden)return;frMarkOwned();var m=
  if(h&&!p.querySelector(".shop-coin")){var d=document.createElement("div");d.className="shop-coin";d.innerHTML='<i class="coin-i"></i><b>'+cn().n+'</b><span class="lbl">보유</span>'+(frFree()?'<span class="free">튜토리얼 무료!</span>':"");h.insertAdjacentElement("afterend",d)}
  var tot=frTotal(),done=p.querySelector(".sdone");
  var pa=document.createElement("div");pa.className="shop-price";
- pa.innerHTML='<span class="sp-l">'+(pr?'눌러서 입어 보세요 · 1개 <i class="coin-i sm"></i><b>'+pr+'</b> <span class="own">(영구 구매)</span>':'색 변경·가구 이동은 무료예요')+'</span><span class="sp-r">'+(tot>0?'입어 보는 중 · 합계 <i class="coin-i sm"></i><b>'+tot+'</b>':"")+'</span>';
+ pa.innerHTML='<span class="sp-l">'+(pr?'눌러서 입어 보세요 · 1개 <i class="coin-i sm"></i><b>'+pr+'</b>'+(k==="cloth"&&m==="face"?' · 눈썹 색 <i class="coin-i sm"></i><b>1</b>':'')+' <span class="own">(영구 구매)</span>':'색 변경·가구 이동은 무료예요')+'</span><span class="sp-r">'+(tot>0?'입어 보는 중 · 합계 <i class="coin-i sm"></i><b>'+tot+'</b>':"")+'</span>';
  if(done){done.insertAdjacentElement("beforebegin",pa);var bb=document.createElement("button");bb.type="button";bb.className="sbuy";bb.setAttribute("data-sbuy","1");bb.disabled=tot<=0;bb.innerHTML='구매'+(tot>0?' <i class="coin-i sm"></i>'+tot:"");done.insertAdjacentElement("afterend",bb)}}
 $("shopp").addEventListener("click",function(e){var b=e.target.closest("[data-sbuy]");if(b){e.stopPropagation();if(!b.disabled)frBuy()}});
 
@@ -2186,10 +2188,10 @@ function vfAdd(){var v=vfS();v.avail=true;v.on=true;v.inbox.push({id:VFN+(++v.se
 var VFREPLY=["방명록 고마워! 🍄 연습 정말 잘하고 있어!","와, 글 잘 받았어! 이제 진짜 친구한테도 남겨 봐~","헤헤, 기분 좋아! 다음엔 다른 친구한테도 놀러 가 보자 🌱"];
 function vfDirect(name,a){var v=vfS();
  switch(name){
-  case "find_by_code":if(v.avail&&String(a.p_code||"").replace(/[^A-Za-z0-9]/g,"").toUpperCase()===VFCODE){var u=vfLite();return {id:u.id,name:u.name,pub:u.pub,vf:true,friend:!!v.on,sent:false,received:false}}return undefined;
-  case "send_request":if(a.p_to===VFID){if(v.avail&&!v.on)vfAdd();return "accepted"}return undefined;
+  case "find_by_code":if(!v.blk&&String(a.p_code||"").replace(/[^A-Za-z0-9]/g,"").toUpperCase()===VFCODE){if(!v.avail){v.avail=true;saveProf()}var u=vfLite();return {id:u.id,name:u.name,pub:u.pub,vf:true,friend:!!v.on,sent:false,received:false}}return undefined;
+  case "send_request":if(a.p_to===VFID){if(!v.blk&&!v.on)vfAdd();return "accepted"}return undefined;
   case "friend_view":case "get_profile":if(a.p_id===VFID)return v.avail||v.on?vfView():null;return undefined;
-  case "remove_friend":case "block_user":if(a.p_id===VFID){v.on=false;v.avail=false;v.likedDay="";v.likedMe=null;v.inbox=[];v.posts=[];saveProf();return null}return undefined;
+  case "remove_friend":case "block_user":if(a.p_id===VFID){v.on=false;v.avail=name==="remove_friend";if(name==="block_user")v.blk=true;v.likedDay="";v.likedMe=null;v.inbox=[];v.posts=[];saveProf();return null}return undefined;
   case "cancel_request":if(a.p_to===VFID)return null;return undefined;
   case "like_user":if(a.p_to===VFID){if(v.likedDay===kst())return "already";v.likedDay=kst();saveProf();return "ok"}return undefined;
   case "submit_report":if(a.p_target===VFID)return null;return undefined;
