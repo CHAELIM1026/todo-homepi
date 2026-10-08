@@ -3342,7 +3342,7 @@ function ctStrayRoll(first){clearTimeout(CTU.strayT);if(CTU.scr!=="out")return;
 /* ---------- 입양 ---------- */
 function ctAdoptScreen(){var c=CTU.ctx;c.clearRect(0,0,320,264);c.drawImage(ctBack(),0,0);
  var h='<p class="ctp">입양할 고양이를 골라 주세요. 고양이마다 좋아하는 것과 싫어하는 것이 달라요.</p><div class="ctgrid">';
- for(var i=0;i<6;i++){h+='<button type="button" class="ctcard" data-a="pickfirst" data-i="'+i+'"><img alt="" src="'+ctSpr("sit",0,i,i%4,0,4).toDataURL()+'"><b>'+CT_COATS[i].n+'</b></button>'}
+ for(var i=0;i<9;i++){h+='<button type="button" class="ctcard" data-a="pickfirst" data-i="'+i+'"><img alt="" src="'+ctSpr("sit",0,i,i%4,0,4).toDataURL()+'"><b>'+CT_COATS[i].n+'</b></button>'}
  ctPanel("고양이 입양",h+"</div>")}
 function ctNamePrompt(src){CTU.pend=src;var img=ctSpr("sit",0,src.coat,src.eye,0,4).toDataURL();var old=CTU.scr;if(old==="adopt")CTU.scr="name";
  ctPanel("이름을 지어 주세요",'<div class="ctnmw"><img alt="" src="'+img+'"><b>'+CT_COATS[src.coat].n+' 고양이</b></div><input class="ctin" id="ctname" maxlength="8" autocomplete="off" placeholder="이름 (최대 8글자)"><div class="ctrow"><button type="button" class="ctb" data-a="nameback">뒤로</button><button type="button" class="ctb pri" data-a="nameok">확인</button></div>');
