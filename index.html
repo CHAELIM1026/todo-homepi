@@ -3605,6 +3605,7 @@ function pzDraw(t){var c=PZ.c,W=PZ.w,m=PZ.me,L=[],id,V=PZV[PZ.sc]||{k:"s"},sc=PZ
  }catch(er){PZ.wcReset=true;PZ.ge=(PZ.ge||0)+1;pzErr(er)}
  if((PZ.fc=(PZ.fc||0)+1)%15===0){var pa=1;try{pa=W.getImageData(3,3,1,1).data[3]}catch(er){pa=1}if(pa===0){pzRebuild();return}}
  var v=pzView(),z=v.z;c.imageSmoothingEnabled=false;c.globalAlpha=1;c.fillStyle=PZFL[sc]||"#222";c.fillRect(0,0,320,264);var oy=Math.max(0,v.sy+v.sh-PH),dh=264-Math.round(oy*z),sh2=v.sh-oy;if(oy>0)c.drawImage(PZ.wc,v.sx*3,v.sy*3,v.sw*3,sh2*3,0,0,320,dh);else c.drawImage(PZ.wc,v.sx*3,v.sy*3,v.sw*3,v.sh*3,0,0,320,264);
+ pzChk(c,sc);
  function X(x){return Math.round((x-v.sx)*z)}function Y(y){return Math.round((y-v.sy)*z)}
  var now=Date.now();
  if(sc==="arc")PZ_GORD.forEach(function(g){var b=PZCABS[g];pzTS(c,{mole:"두더지",fish:"붕어빵",kart:"카트",run:"점프",tag:"술래"}[g],X(b.x),Y(b.y)+5,"#ffe27a","center",8)});
@@ -3733,6 +3734,14 @@ function pzClick(e){var b=e.target.closest("[data-a]");if(!b)return;var a=b.getA
  if(a==="bmax"){var j=$("pzbet");if(j)j.value=pzBetMax();return}
  if(a==="spin"){pzSpin();return}if(a==="rbet"){pzRlBet();return}}
 /* ---- 메인 루프 ---- */
+function pzPts(x,pts){var o=[];pts.forEach(function(p){try{var d=x.getImageData(p[0],p[1],1,1).data;o.push(d[0]+"."+d[1]+"."+d[2]+"."+d[3])}catch(e){o.push("x")}});return o}
+function pzDiag(){var v;try{v=pzView()}catch(e){v=null}var W=PZ.w,c=PZ.c;return JSON.stringify({sc:PZ.sc,pan:PZ.pan,sheet:PZ.sheet,sk:PZ.me.sk,vd:PZ.vd,me:[PZ.me.x,PZ.me.y],cam:PZ.cam,ct:PZ.ct,v:v,wc:[PZ.wc.width,PZ.wc.height],cv:[PZ.cv.width,PZ.cv.height,PZ.cv.clientWidth,PZ.cv.clientHeight],dpr:window.devicePixelRatio,W:pzPts(W,[[3,3],[160,130],[300,250],[100,200]]),C:pzPts(c,[[10,10],[160,130],[300,250],[100,200]]),er:PZ.er2,rb:PZ.rb,fl:PZ.flat})}
+window.__pzd=function(){return pzDiag()};
+function pzChk(c,sc){if((PZ.fc2=(PZ.fc2||0)+1)%20)return;var P=pzPts(c,[[10,10],[160,60],[300,30],[60,130],[250,130],[160,200],[40,240],[290,240],[160,130]]),i,same=true;for(i=1;i<P.length;i++)if(P[i]!==P[0])same=false;
+ if(!same){PZ.flat=0;return}PZ.flat=(PZ.flat||0)+1;
+ if(PZ.flat===1){try{c.drawImage(PZ.wc,0,0,PW*3,PH*3,0,0,320,264)}catch(e){}}
+ else if(PZ.flat===2){pzRebuild();PZ.cv.width=320}
+ else if(PZ.flat===3||PZ.flat%10===0){try{pzFix()}catch(e){}try{frToast("광장 화면 오류 정보: "+pzDiag().slice(0,330),"닫기")}catch(e){}}}
 function pzRebuild(){var k;PZ.bg={};for(k in PZS)delete PZS[k];for(k in PZIM)delete PZIM[k];for(k in PZICC)delete PZICC[k];for(k in PZICU)delete PZICU[k];if(typeof PZCABC!=="undefined")for(k in PZCABC)delete PZCABC[k];PZ.wc=document.createElement("canvas");PZ.wc.width=PW*3;PZ.wc.height=PH*3;PZ.w=PZ.wc.getContext("2d");PZ.rb=(PZ.rb||0)+1;if(PZ.rb===2){try{frToast("광장 그림을 다시 불러왔어요")}catch(x){}}}
 function pzErr(e){PZ.er2=(PZ.er2||0)+1;try{console.error("plaza",e)}catch(x){}if(PZ.er2===3){try{frToast("광장 화면 오류를 복구했어요 ("+String(e&&e.message||e).slice(0,60)+")")}catch(x){}}}
 function pzFix(){var m=PZ.me;PZ.cam={cx:53.5,cy:44,z:3};PZ.ct={cx:53.5,cy:44,z:3};PZ.wcReset=true;if(!isFinite(m.x)||!isFinite(m.y)){m.x=53;m.y=PZ.sc==="sq"?60:78}
