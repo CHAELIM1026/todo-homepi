@@ -2944,6 +2944,8 @@ function pzTag(){var g={id:"tag",name:"술래잡기 대작전",t3:80,t5:130,desc
 var PZ_GAMES={mole:{n:"두더지게임",mk:pzMole},fish:{n:"붕어빵 타이쿤",mk:pzFish},kart:{n:"카트 레이서",mk:pzKart},run:{n:"점프 대모험",mk:pzRun},tag:{n:"술래잡기 대작전",mk:pzTag}};
 var PZ_GORD=["mole","fish","kart","run","tag"];
 
+/* 화면 보관용 캔버스는 GPU가 아니라 CPU로 (폰에서 그림이 통째로 사라지는 현상 방지) */
+(function(){var g=HTMLCanvasElement.prototype.getContext;if(g.__pz)return;var f=function(t,o){if(t==="2d"&&!this.isConnected){o=Object.assign({willReadFrequently:true},o||{})}return g.call(this,t,o)};f.__pz=1;HTMLCanvasElement.prototype.getContext=f})();
 /* ===== 광장 3차: 데이터 / 배치 ===== */
 var PW=107,PH=88;
 var PZV={cafe:{n:"카페",k:"t"},rest:{n:"음식점",k:"t"},arc:{n:"오락실",k:"a"},cas:{n:"카지노",k:"c"},bar:{n:"칵테일바",k:"t"}},PZVO=["cafe","rest","arc","cas","bar"];
@@ -3601,6 +3603,7 @@ function pzDraw(t){var c=PZ.c,W=PZ.w,m=PZ.me,L=[],id,V=PZV[PZ.sc]||{k:"s"},sc=PZ
  PZ.staff.forEach(function(s){pzShaker(W,s,t)});
  if(sc==="sq"&&PZ.pt.length)pzPartDraw(W,PZ.sea,PZ.pt,t);
  }catch(er){PZ.wcReset=true;PZ.ge=(PZ.ge||0)+1;pzErr(er)}
+ if((PZ.fc=(PZ.fc||0)+1)%15===0){var pa=1;try{pa=W.getImageData(3,3,1,1).data[3]}catch(er){pa=1}if(pa===0){pzRebuild();return}}
  var v=pzView(),z=v.z;c.imageSmoothingEnabled=false;c.globalAlpha=1;c.fillStyle=PZFL[sc]||"#222";c.fillRect(0,0,320,264);var oy=Math.max(0,v.sy+v.sh-PH),dh=264-Math.round(oy*z),sh2=v.sh-oy;if(oy>0)c.drawImage(PZ.wc,v.sx*3,v.sy*3,v.sw*3,sh2*3,0,0,320,dh);else c.drawImage(PZ.wc,v.sx*3,v.sy*3,v.sw*3,v.sh*3,0,0,320,264);
  function X(x){return Math.round((x-v.sx)*z)}function Y(y){return Math.round((y-v.sy)*z)}
  var now=Date.now();
@@ -3730,6 +3733,7 @@ function pzClick(e){var b=e.target.closest("[data-a]");if(!b)return;var a=b.getA
  if(a==="bmax"){var j=$("pzbet");if(j)j.value=pzBetMax();return}
  if(a==="spin"){pzSpin();return}if(a==="rbet"){pzRlBet();return}}
 /* ---- 메인 루프 ---- */
+function pzRebuild(){var k;PZ.bg={};for(k in PZS)delete PZS[k];for(k in PZIM)delete PZIM[k];for(k in PZICC)delete PZICC[k];for(k in PZICU)delete PZICU[k];if(typeof PZCABC!=="undefined")for(k in PZCABC)delete PZCABC[k];PZ.wc=document.createElement("canvas");PZ.wc.width=PW*3;PZ.wc.height=PH*3;PZ.w=PZ.wc.getContext("2d");PZ.rb=(PZ.rb||0)+1;if(PZ.rb===2){try{frToast("광장 그림을 다시 불러왔어요")}catch(x){}}}
 function pzErr(e){PZ.er2=(PZ.er2||0)+1;try{console.error("plaza",e)}catch(x){}if(PZ.er2===3){try{frToast("광장 화면 오류를 복구했어요 ("+String(e&&e.message||e).slice(0,60)+")")}catch(x){}}}
 function pzFix(){var m=PZ.me;PZ.cam={cx:53.5,cy:44,z:3};PZ.ct={cx:53.5,cy:44,z:3};PZ.wcReset=true;if(!isFinite(m.x)||!isFinite(m.y)){m.x=53;m.y=PZ.sc==="sq"?60:78}
  var S=pzSeatsOf(PZ.sc)||[];if(m.sk>=S.length||m.sk<-1||(m.sk>=0&&!S[m.sk])){m.sk=-1;m.od=-1;m.sh=0;PZ.sheet=false;pzSheetClose()}
