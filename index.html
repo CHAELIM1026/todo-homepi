@@ -1172,11 +1172,12 @@ button.ctrow2:disabled{opacity:.45;cursor:default}
 .dp-n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:800}
 .dp-help{margin:-2px 0 6px;font-size:11.5px;color:var(--dpm)}
 .dp-in,.dp-ta{width:100%;box-sizing:border-box;border:0;border-bottom:2px dotted var(--dpl);background:transparent;color:var(--dpi);font:inherit;padding:5px 2px;outline:0}
-.dp input.dp-in,.dp textarea.dp-ta{background-color:transparent;box-shadow:none;border-radius:0;border-top:0;border-left:0;border-right:0}
+.dp input.dp-in,.dp textarea.dp-in,.dp textarea.dp-ta{background-color:transparent;box-shadow:none;border-radius:0;border-top:0;border-left:0;border-right:0}
 .dp-in:focus,.dp-ta:focus{border-bottom-color:var(--accent-d)}
 .dp-in::placeholder,.dp-ta::placeholder{color:var(--dpm)}
 .dp-ta{display:block;border:0;min-height:196px;resize:none;overflow:hidden;line-height:28px;padding:0 2px;background:repeating-linear-gradient(transparent 0 27px,var(--dpl) 27px 28px);background-attachment:local}
 .dp-ta.sm{min-height:84px}
+.dp-au{display:block;resize:none;overflow:hidden;line-height:1.4;height:auto}
 .dp-ml{display:grid;gap:8px}
 .dp-mr{display:grid;gap:4px}
 .dp-mh{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--dpi)}
@@ -4048,7 +4049,7 @@ frCoinUi();frWkInit();setInterval(frCoinUi,20000);setInterval(function(){renderR
 frBoot();
 
 /* ---- 화면(홈/위클리/먼슬리) 기억: 새로고침해도 같은 화면 ---- */
-(function(){try{var t=sessionStorage.getItem("tdh_tab");if((t==="week"||t==="month")&&window.matchMedia&&window.matchMedia("(max-width:820px)").matches)$("app").dataset.tab=t}catch(e){}})();
+(function(){try{var t=sessionStorage.getItem("tdh_tab");if((t==="week"||t==="month"||t==="diary")&&window.matchMedia&&window.matchMedia("(max-width:820px)").matches)$("app").dataset.tab=t}catch(e){}})();
 new MutationObserver(function(){var t=$("app").dataset.tab;try{sessionStorage.setItem("tdh_tab",t)}catch(e){}
  if(t==="home"){requestAnimationFrame(function(){fitAll();if(typeof boxLay==="function")boxLay()})}}).observe($("app"),{attributes:true,attributeFilter:["data-tab"]});
 window.addEventListener("pageshow",function(){if($("app").dataset.tab==="home")requestAnimationFrame(fitAll)});
@@ -5137,7 +5138,7 @@ function diIco(k){var H='<path d="M3 13L14 4l11 9" fill="none" stroke="#8a5a3a" 
  var N='<circle cx="14" cy="14" r="10" fill="#fff7e8" stroke="#8a5a3a" stroke-width="1.8"/><circle cx="14" cy="14" r="6" fill="none" stroke="#e6d2b5" stroke-width="1.4"/><path d="M5 5l18 18" stroke="#e0587a" stroke-width="2.6" stroke-linecap="round"/>';
  var s=k==="n"?N:k==="h"?H:k==="o"?O:'<g transform="translate(-1 0) scale(.62)">'+H+'</g><g transform="translate(13 1) scale(.5)">'+O.replace("M3 24h22","M-4 24h30")+'</g>';
  return '<svg viewBox="0 0 28 28" aria-hidden="true">'+s+'</svg>'}
-function diMealHtml(e,ro){return '<div class="dp-ml">'+DI_ML.map(function(m){var k=m[0],p=e["p"+k],pl=DI_PL.filter(function(x){return x[0]===p})[0];return '<div class="dp-mr"><div class="dp-mh"><span>'+m[1]+'</span><button type="button" class="dp-pl'+(p?" on":"")+'" data-dpl="'+k+'" aria-label="'+m[1]+' 장소 선택"'+(pl?' title="'+pl[1]+'"':"")+'>'+(p?diIco(p):"？")+'</button>'+(pl?'<small style="color:var(--dpm)">'+(pl[0]==="h"?"집에서":pl[0]==="o"?"밖에서":pl[0]==="n"?"안 먹었어요":"집+밖에서")+'</small>':"")+'</div>'+(DI.mp===k&&!ro?'<div class="dp-pk">'+DI_PL.map(function(x){return '<button type="button" data-dpv="'+x[0]+'" data-dpm="'+k+'" aria-pressed="'+(p===x[0])+'">'+diIco(x[0])+'<span>'+x[1]+'</span></button>'}).join("")+'</div>':"")+(p==="n"?"":'<input class="dp-in" data-dk="m'+k+'" type="text" autocomplete="off" placeholder="'+(k==="s"?"간식으로 먹은 것":m[1]+"에 먹은 것")+'" value="'+E(e["m"+k]||"")+'" aria-label="'+m[1]+'"'+(ro?" readonly":"")+'>')+'</div>'}).join("")+'</div>'}
+function diMealHtml(e,ro){return '<div class="dp-ml">'+DI_ML.map(function(m){var k=m[0],p=e["p"+k],pl=DI_PL.filter(function(x){return x[0]===p})[0];return '<div class="dp-mr"><div class="dp-mh"><span>'+m[1]+'</span><button type="button" class="dp-pl'+(p?" on":"")+'" data-dpl="'+k+'" aria-label="'+m[1]+' 장소 선택"'+(pl?' title="'+pl[1]+'"':"")+'>'+(p?diIco(p):"？")+'</button>'+(pl?'<small style="color:var(--dpm)">'+(pl[0]==="h"?"집에서":pl[0]==="o"?"밖에서":pl[0]==="n"?"안 먹었어요":"집+밖에서")+'</small>':"")+'</div>'+(DI.mp===k&&!ro?'<div class="dp-pk">'+DI_PL.map(function(x){return '<button type="button" data-dpv="'+x[0]+'" data-dpm="'+k+'" aria-pressed="'+(p===x[0])+'">'+diIco(x[0])+'<span>'+x[1]+'</span></button>'}).join("")+'</div>':"")+(p==="n"?"":'<textarea class="dp-in dp-au" data-dk="m'+k+'" rows="1" autocomplete="off" placeholder="'+(k==="s"?"간식으로 먹은 것":m[1]+"에 먹은 것")+'" aria-label="'+m[1]+'"'+(ro?" readonly":"")+'>'+E(e["m"+k]||"")+'</textarea>')+'</div>'}).join("")+'</div>'}
 function diMealTxt(e){return DI_ML.map(function(m){var k=m[0],p=e["p"+k],t=e["m"+k];if(!t&&!p)return "";return m[1]+(p?" ["+(p==="h"?"집":p==="o"?"밖":p==="n"?"안 먹었어요":"집+밖")+"]":"")+(t?" "+t:"")}).filter(Boolean).join("\n")}
 function diHasMeal(e){return DI_ML.some(function(m){return e["m"+m[0]]||e["p"+m[0]]})}
 
@@ -5154,14 +5155,14 @@ function diLab(a,v){return E((a.filter(function(m){return m[0]===v})[0]||[])[1]|
 function diTagHtml(h){return diTags(h).map(function(t){return '<a data-dtag="'+E(t)+'">#'+E(t)+'</a>'}).join("")}
 function diPage(s){var e=diGet(s),td=diToday(),isT=s===td,lk=diLock(s),ro=diRO(s),rd=ro?" readonly":"";
  return '<div class="dp'+(ro?" ro":"")+'"><i class="dp-tape"></i><div class="dp-head"><button type="button" class="dp-nv" data-dnav="-1" aria-label="전날">‹</button><div class="dp-date">'+diDateLabel(s)+'<input class="dp-ttl" data-dk="n" type="text" maxlength="30" autocomplete="off" value="'+E(e.n||DI_TTL)+'" aria-label="일기장 제목"'+rd+'></div><button type="button" class="dp-nv" data-dnav="1" aria-label="다음날"'+(s>=td?" disabled":"")+'>›</button>'+(isT?"":'<button type="button" class="dp-tdy" data-dnav="0">오늘</button>')+'</div>'
- +'<section class="dp-f"><h4><span class="dp-n">1</span>오늘의 한 마디</h4><input class="dp-in" data-dk="w" type="text" autocomplete="off" placeholder="오늘을 한 마디로 말한다면?" value="'+E(e.w||"")+'" aria-label="오늘의 한 마디"'+rd+'></section>'
+ +'<section class="dp-f"><h4><span class="dp-n">1</span>오늘의 한 마디</h4><textarea class="dp-in dp-au" data-dk="w" rows="1" autocomplete="off" placeholder="오늘을 한 마디로 말한다면?" aria-label="오늘의 한 마디"'+rd+'>'+E(e.w||"")+'</textarea></section>'
  +'<section class="dp-f"><h4><span class="dp-n">2</span>오늘의 기분</h4><div class="dp-row">'+diOpts(DI_MOOD,e.m,"dm")+'</div><div class="dp-lab">'+diLab(DI_MOOD,e.m)+'</div></section>'
  +'<section class="dp-f"><h4><span class="dp-n">3</span>오늘의 날씨</h4><div class="dp-row">'+diOpts(DI_WX,e.x,"dx")+'</div><div class="dp-lab">'+diLab(DI_WX,e.x)+'</div></section>'
- +'<section class="dp-f"><h4><span class="dp-n">4</span>오늘의 노래</h4><input class="dp-in" data-dk="s" type="text" autocomplete="off" placeholder="♪ 오늘 들은 노래는?" value="'+E(e.s||"")+'" aria-label="오늘의 노래"'+rd+'></section>'
+ +'<section class="dp-f"><h4><span class="dp-n">4</span>오늘의 노래</h4><textarea class="dp-in dp-au" data-dk="s" rows="1" autocomplete="off" placeholder="♪ 오늘 들은 노래는?" aria-label="오늘의 노래"'+rd+'>'+E(e.s||"")+'</textarea></section>'
  +'<section class="dp-f"><h4><span class="dp-n">5</span>오늘 내가 잘한 일</h4><div class="dp-help">사소한 것이라도 괜찮아요! 물 한 잔 마시기, 이불 개기도 충분히 잘한 일이에요 😊</div><textarea class="dp-ta sm" data-dk="g" rows="3" placeholder="오늘 나를 칭찬해 주세요." aria-label="오늘 내가 잘한 일"'+rd+'>'+E(e.g||"")+'</textarea></section>'
  +'<section class="dp-f"><h4><span class="dp-n">6</span>오늘의 식사</h4>'+diMealHtml(e,ro)+'</section>'
  +'<section class="dp-f"><h4><span class="dp-n">7</span>오늘의 줄글</h4><textarea class="dp-ta" data-dk="t" rows="7" placeholder="오늘 있었던 일을 자유롭게 적어 보세요." aria-label="오늘의 줄글"'+rd+'>'+E(e.t||"")+'</textarea></section>'
- +'<section class="dp-f"><h4><span class="dp-n">#</span>해시태그</h4><input class="dp-in" data-dk="h" type="text" autocomplete="off" placeholder="#버섯 #행복 (띄어쓰기로 구분)" value="'+E(e.h||"")+'" aria-label="해시태그"'+rd+'><div class="dp-tg">'+diTagHtml(e.h)+'</div></section>'
+ +'<section class="dp-f"><h4><span class="dp-n">#</span>해시태그</h4><textarea class="dp-in dp-au" data-dk="h" rows="1" autocomplete="off" placeholder="#버섯 #행복 (띄어쓰기로 구분)" aria-label="해시태그"'+rd+'>'+E(e.h||"")+'</textarea><div class="dp-tg">'+diTagHtml(e.h)+'</div></section>'
  +(lk?'<div class="dp-lock">지난 날짜에는 새 일기를 쓸 수 없어요. 일기는 그날 당일에만 쓸 수 있어요 🌱</div>':'')
  +'<div class="dp-foot"><span class="dp-fl">'+(ro?"":'<button type="button" class="dp-btn pri" data-dsave="1">저장</button><span class="dp-sv" id="dpSv">'+(DI.sv===s?"✓ 저장했어요":"")+'</span>')+'</span><span>'+(lk?"":ro?'<button type="button" class="dp-btn" data-dedt="1">수정하기</button> <button type="button" class="dp-btn" data-ddel="1">삭제하기</button>':(DI.edit===s?'<button type="button" class="dp-btn" data-ddone="1">수정 끝</button> ':"")+'<button type="button" class="dp-btn" data-ddel="1"'+(diHas(s)?"":" hidden")+'>'+(s===td?"이 날 일기 지우기":"삭제하기")+'</button>')+'</span></div></div>'}
 function diMatch(k){var e=diGet(k),q=DI.q.replace(/#/g,"").trim().toLowerCase();if(q)return diTags(e.h).some(function(t){return t.toLowerCase().indexOf(q)>=0});if(DI.y&&k.slice(0,4)!==DI.y)return false;if(DI.mo&&DI.mo!=="all"&&+k.slice(5,7)!==+DI.mo)return false;return true}
@@ -5171,16 +5172,19 @@ function diList(){var ks=Object.keys(diAll()).filter(diHas).sort().reverse(),ys=
  var L=ks.filter(diMatch);h=L.length?L.map(function(k){var p=parse(k),e=diGet(k),tg=diTags(e.h).slice(0,3).map(function(t){return "#"+E(t)}).join(" ");return '<button type="button" class="dl-c" data-dpick="'+k+'" aria-pressed="'+(k===DI.date)+'"><b>'+(e.m||"📓")+" "+(p.getMonth()+1)+"/"+p.getDate()+" ("+DOW[p.getDay()]+")"+'</b><span>'+E(e.n||DI_TTL)+'</span>'+(tg?'<i>'+tg+'</i>':"")+'</button>'}).join(""):'<div class="dl-none">'+(ks.length?"조건에 맞는 일기가 없어요":"아직 쓴 일기가 없어요")+'</div>';
  document.querySelectorAll(".dl-cards").forEach(function(c){c.innerHTML=h})}
 function diFit(){var cv=diFit.c||(diFit.c=document.createElement("canvas")),g=cv.getContext("2d");document.querySelectorAll(".dl-y,.dl-mo").forEach(function(s){var o=s.options[s.selectedIndex];if(!o)return;g.font="12px "+(getComputedStyle(s).fontFamily||"sans-serif");s.style.width=Math.ceil(g.measureText(o.text).width)+30+"px"})}
-function diGrow(){document.querySelectorAll(".dp-ta").forEach(function(t){var mn=t.classList.contains("sm")?84:196;t.style.height="auto";t.style.height=Math.max(mn,t.scrollHeight)+"px"})}
+function diGrow(){document.querySelectorAll(".dp-ta,.dp-au").forEach(function(t){if(!t.offsetParent)return;var au=t.classList.contains("dp-au"),mn=au?0:t.classList.contains("sm")?84:196;t.style.height="auto";t.style.height=Math.max(mn,t.scrollHeight+(au?2:0))+"px"})}
 function diLay(s){return '<div class="dlay"><aside class="dlist"><div class="dl-h"><b>📖 쓴 일기</b><div class="dl-r"><select class="dl-y" data-dy="1" aria-label="연도"></select><select class="dl-mo" data-dmo="1" aria-label="월"></select><input type="search" class="dl-q" data-dq="1" placeholder="#해시태그 검색" value="'+E(DI.q)+'" aria-label="해시태그 검색"></div></div><div class="dl-cards"></div></aside>'+diPage(s)+'</div>'}
-function diRender(){if(!DI.date)DI.date=diToday();var html=diLay(DI.date);["dpD","dpP"].forEach(function(id){var c=$(id);if(c)c.innerHTML=html});diList();diGrow()}
+function diRender(){if(!DI.date)DI.date=diToday();var html=diLay(DI.date);["dpD","dpP"].forEach(function(id){var c=$(id);if(c)c.innerHTML=html});diList();diGrow();requestAnimationFrame(diGrow);try{sessionStorage.setItem("tdh_dd",DI.date)}catch(x){}}
 function diMode(on){$("app").dataset.md=on?"1":"";$("dtog").textContent=on?"먼슬리로 전환":"일기로 전환";if(on){DI.date=DI.date||diToday();diRender()}}
 function diGo(s){DI.date=s;if(window.innerWidth<=820){if($("app").dataset.tab!=="diary")goTab("diary");else diRender()}else{if($("app").dataset.md!=="1")diMode(true);else diRender()}}
 function diView(s){var e=diGet(s);var row=function(l,v){return v?'<div class="dvr"><small>'+l+'</small><p>'+E(v)+'</p></div>':""};
  frModal('<div class="dvw"><div class="dp-date">'+diDateLabel(s)+'<small>📓 '+E(e.n||DI_TTL)+'</small></div>'+row("오늘의 한 마디",e.w)+(e.m||e.x?'<div class="dvr"><small>오늘의 기분 · 날씨</small><p style="font-size:20px">'+E((e.m||"")+(e.m&&e.x?"  ":"")+(e.x||""))+'</p></div>':"")+row("오늘의 노래",e.s?"♪ "+e.s:"")+row("오늘 내가 잘한 일",e.g)+row("오늘의 식사",diMealTxt(e))+row("오늘의 줄글",e.t)+(e.h?'<div class="dp-tg">'+diTagHtml(e.h)+'</div>':"")+'<div class="dvb"><button type="button" class="dp-btn" data-dclose="1">닫기</button><button type="button" class="dp-btn" data-dedit="'+s+'">일기장 열기</button></div></div>');var m=$("fmodal");m.classList.add("dv")}
 document.addEventListener("input",function(e){var t=e.target;if(!t||!t.getAttribute)return;
  if(t.hasAttribute("data-dq")){DI.q=t.value;document.querySelectorAll(".dl-q").forEach(function(o){if(o!==t)o.value=t.value});diList();return}
- if(!t.hasAttribute("data-dk")||!t.closest(".dp")||t.readOnly)return;var k=t.getAttribute("data-dk"),v=t.value;if(k==="n"&&(v.trim()===""||v===DI_TTL))v="";diSet(DI.date,k,v);document.querySelectorAll('.dp [data-dk="'+k+'"]').forEach(function(o){if(o!==t&&o.value!==t.value)o.value=t.value});if(k==="t"||k==="g")diGrow();if(k==="h")document.querySelectorAll(".dp-tg").forEach(function(o){if(o.closest(".dp"))o.innerHTML=diTagHtml(v)});document.querySelectorAll("#dpSv").forEach(function(s){s.textContent=""})});
+ if(!t.hasAttribute("data-dk")||!t.closest(".dp")||t.readOnly)return;var k=t.getAttribute("data-dk"),v=t.value;if(k==="n"&&(v.trim()===""||v===DI_TTL))v="";diSet(DI.date,k,v);document.querySelectorAll('.dp [data-dk="'+k+'"]').forEach(function(o){if(o!==t&&o.value!==t.value)o.value=t.value});diGrow();if(k==="h")document.querySelectorAll(".dp-tg").forEach(function(o){if(o.closest(".dp"))o.innerHTML=diTagHtml(v)});document.querySelectorAll("#dpSv").forEach(function(s){s.textContent=""})});
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target&&e.target.classList&&e.target.classList.contains("dp-au"))e.preventDefault()});
+window.addEventListener("resize",function(){diGrow()});try{if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){diGrow()})}catch(x){}
+new MutationObserver(function(){requestAnimationFrame(diGrow)}).observe($("app"),{attributes:true,attributeFilter:["data-tab","data-md"]});
 document.addEventListener("change",function(e){var t=e.target;if(!t||!t.hasAttribute)return;if(t.hasAttribute("data-dy")){DI.y=t.value;DI.mo="";diList()}else if(t.hasAttribute("data-dmo")){DI.mo=t.value;diList()}});
 document.addEventListener("click",function(e){var el=e.target,x;function q(a){return el.closest&&el.closest("["+a+"]")}
  if(x=q("data-dn")){e.stopPropagation();e.preventDefault();diView(x.getAttribute("data-dn"));return}
@@ -5200,6 +5204,8 @@ document.addEventListener("click",function(e){var el=e.target,x;function q(a){re
  if(x=q("data-dsave")){var sd=DI.date,se=diGet(sd);if(!diHasE(se)){frToast("먼저 일기를 써 주세요");return}DI.sv=sd;document.querySelectorAll("#dpSv").forEach(function(s){s.textContent="✓ 저장했어요"});if(sd===diToday()){if((cn().diary||0)>=5){}else if(diFull(se))frEarn("diary",5,"일기를 썼어요");else frToast("모든 항목을 채우면 5코인을 받아요")}return}
  if(x=q("data-ddel")){var dd=DI.date;frModal('<h3>일기 삭제</h3><div>'+(dd===diToday()?diDateLabel(dd)+'의 일기를 지울까요?<br>지우면 되돌릴 수 없어요.':'삭제하면 다시는 복구되지 않아요.<br>추억할 수 있는 일기를 정말 삭제하시겠어요?')+'</div><div class="fm-btns"><button type="button" data-v="0">'+(dd===diToday()?"아니오":"취소")+'</button><button type="button" class="dng" data-v="1">'+(dd===diToday()?"지우기":"네")+'</button></div>',function(m){m.onclick=function(ev){var b=ev.target.closest("button[data-v]");if(!b)return;frModalClose();if(b.getAttribute("data-v")==="1"){delete diAll()[dd];saveProf();DI.edit="";try{renderCal()}catch(x){}diRender()}}});return}
 },true);
+try{var rdd=sessionStorage.getItem("tdh_dd");if(/^\d{4}-\d{2}-\d{2}$/.test(rdd)&&$("app").dataset.tab==="diary")DI.date=rdd}catch(x){}
+if($("app").dataset.tab==="diary")diRender();
 $("pfc").onclick=function(e){e.stopPropagation();ctOpen()};
 render();
 })();
