@@ -1225,6 +1225,7 @@ button.ctrow2:disabled{opacity:.45;cursor:default}
 .nbt{display:inline-flex;flex-direction:column;align-items:center;min-width:54.16px}
 .nb .nbt svg.pen{position:static;display:block;width:3em;align-self:center;height:6px;margin:-2px 0 -8px;color:color-mix(in srgb,currentColor 50%,var(--accent));pointer-events:none;overflow:visible}
 .nb[data-go=diary] .nbt svg.pen{width:2em}
+@media(min-width:821px){.dp{max-width:624px}.dp-row{flex-wrap:nowrap}.dp-em{flex:1 1 0;min-width:0;max-width:40px;width:auto}}
 @media(min-width:821px){.dl-h .dl-r{flex-wrap:wrap}.dl-h .dl-r select{flex:1 1 0;width:auto;min-width:0}.dl-h .dl-r input{flex:0 0 100%;width:100%}}
 #pzcv{display:block;width:100%;height:auto;image-rendering:pixelated;aspect-ratio:320/264;cursor:pointer;touch-action:manipulation}
 .pzov{z-index:3100}
@@ -3693,7 +3694,10 @@ function pzShaker(c,s,t){var ph=(Date.now()/1000)%7;if(s.k!=="bartender")return;
 /* ---- 카메라 (앉으면 해당 테이블과 내 모습을 확대) ---- */
 function pzCamAim(){var m=PZ.me,V=PZV[PZ.sc]||{k:"s"},t,z=3,cx=53.5,cy=44;if(m.sk<0)PZ.vd=0;
  if(V.k==="t"&&m.sk>=0){var s=pzSeatsOf(PZ.sc)[m.sk];t=PZT[PZ.sc][s.t];z=(PZ.sc==="bar"&&t[1]<50)?5:6;cx=(t[0]+s.x)/2;cy=PZ.sc==="bar"&&t[1]<50?27:t[1]+6;if(PZ.sheet)cy=s.y-(s.pre?18:13)+132/z;if(s.n>=4){z=5;cx=t[0];cy=t[1]+10.4}}
- if(V.k==="t"&&m.sk>=0&&PZ.vd>0){var Q=pzRMq(),s2=pzSeatsOf(PZ.sc)[m.sk],oy=cy-t[1];cx=PZH0;cy=PZH0+oy;if(PZ.sheet){var pp=pzDioPos(s2,PZ.sc,Q.cam);cy=PZH0+.5+6.5+pp.d-(s2.pre?18:13)+132/z}}
+ if(V.k==="t"&&m.sk>=0&&PZ.vd>0){var Q=pzRMq(),s2=pzSeatsOf(PZ.sc)[m.sk],oy=cy-t[1];cx=PZH0;cy=PZH0+oy;
+  var nsx=(Q.cam==="S"||Q.cam==="N"),hu=(pzTR(t)[2]-pzTR(t)[0])/2,tw=nsx?hu*2:8,th=nsx?4:Math.round(hu*2*.45)+1,x0=PZH0-tw/2,x1=PZH0+tw/2,y0=PZH0+.5-th/2,y1=PZH0+.5+th/2+6;
+  pzSeatsOf(PZ.sc).forEach(function(q){if(q.t!==s2.t)return;var pp=pzDioPos(q,PZ.sc,Q.cam),qx=PZH0+pp.x,qy=PZH0+.5+6.5+pp.d;x0=Math.min(x0,qx-7);x1=Math.max(x1,qx+7);y0=Math.min(y0,qy-19);y1=Math.max(y1,qy+9)});
+  var bw=x1-x0+8,bh=y1-y0+6,av=PZ.sheet?150:264;z=Math.max(3.6,Math.min(6,300/bw,av/bh));cx=(x0+x1)/2;cy=PZ.sheet?(y0-3)+132/z:(y0+y1)/2}
  PZ.ct={cx:cx,cy:cy,z:z}}
 function pzOkC(o){return !!o&&isFinite(o.cx)&&isFinite(o.cy)&&isFinite(o.z)&&o.z>=1&&o.z<=12}
 function pzCamStep(){pzCamAim();var rk=PZ.sc+"|"+(pzRMon()?PZ.vd:0);if(PZ._rk!==rk){PZ._rk=rk;PZ.cam=null}if(!pzOkC(PZ.ct))PZ.ct={cx:53.5,cy:44,z:3};if(!pzOkC(PZ.cam))PZ.cam={cx:PZ.ct.cx,cy:PZ.ct.cy,z:PZ.ct.z};var a=PZ.cam,b=PZ.ct;a.cx+=(b.cx-a.cx)*.16;a.cy+=(b.cy-a.cy)*.16;a.z+=(b.z-a.z)*.16;if(Math.abs(b.z-a.z)<.03&&Math.abs(b.cx-a.cx)<.1&&Math.abs(b.cy-a.cy)<.1){a.cx=b.cx;a.cy=b.cy;a.z=b.z}}
