@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self'; manifest-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="no-referrer">
 <script>if(window.top!==window.self){document.documentElement.style.display="none";try{window.top.location.replace(window.self.location.href)}catch(e){}}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -14,15 +14,9 @@
 <link rel="apple-touch-icon" id="ati" href="apple-touch-icon.png">
 <script>try{if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)document.getElementById("ati").setAttribute("href","apple-touch-icon-dark.png")}catch(e){}</script>
 <script>
-/* 다크모드에서 홈 화면에 설치하면 우주선 아이콘이 되도록, 설치 정보(manifest)의 아이콘을 모드에 맞게 바꿔 끼워요 */
-(function(){try{var mq=window.matchMedia("(prefers-color-scheme: dark)"),ln=document.querySelector('link[rel="manifest"]');if(!ln||!window.fetch||!window.Blob||!window.URL)return;var orig=ln.getAttribute("href"),base=new URL(orig,location.href).href,cur=null;
-function go(){var dark=mq.matches;if(cur===dark)return;cur=dark;
- if(!dark){ln.setAttribute("href",orig);return}
- fetch(base,{cache:"no-cache"}).then(function(r){return r.json()}).then(function(m){
-  var ab=function(u){return new URL(u,base).href},ic=m.icons||[];
-  return Promise.all(ic.map(function(i){var d=ab(i.src).replace(/\/icon-(?!dark)/,"/icon-dark-");if(d===ab(i.src))return i;return fetch(d,{method:"HEAD"}).then(function(r){var o=Object.assign({},i);o.src=r.ok?d:ab(i.src);return o}).catch(function(){var o=Object.assign({},i);o.src=ab(i.src);return o})})).then(function(n){
-   m.icons=n;if(m.start_url)m.start_url=ab(m.start_url);if(m.scope)m.scope=ab(m.scope);if(m.id)m.id=ab(m.id);else m.id=ab(m.start_url||".");
-   ln.setAttribute("href",URL.createObjectURL(new Blob([JSON.stringify(m)],{type:"application/manifest+json"})))})}).catch(function(){ln.setAttribute("href",orig)})}
+/* 다크모드에서 홈 화면에 설치하면 우주선 아이콘이 되도록, 다크모드일 때는 다크용 설치 정보 파일(manifest-dark.json)을 쓰게 해요 */
+(function(){try{var mq=window.matchMedia("(prefers-color-scheme: dark)"),ln=document.querySelector('link[rel="manifest"]');if(!ln)return;var orig=ln.getAttribute("href")||"manifest.json";
+function go(){ln.setAttribute("href",mq.matches?"manifest-dark.json":orig)}
 go();if(mq.addEventListener)mq.addEventListener("change",go);else if(mq.addListener)mq.addListener(go)}catch(e){}})();
 </script>
 <meta name="mobile-web-app-capable" content="yes">
