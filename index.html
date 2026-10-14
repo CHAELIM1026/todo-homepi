@@ -1366,7 +1366,7 @@ function clover4(s,done,total){var r=total?done/total:0,top=22.2-20.4*r,h='<svg 
 function taskRow(t,showDate){
  var s=t.subs||[],g=grp(t.date),i=g.indexOf(t),up=i>0&&!g[i-1].done===!t.done,dn=i<g.length-1&&!g[i+1].done===!t.done;
  var h='<div class="task'+(t.done?' done':'')+'" data-tid="'+t.id+'"><div class="row">'+(editing==="t:"+t.id?'<form class="tef" data-tef="'+t.id+'"><input type="text" name="t" value="'+esc(t.title)+'" maxlength="80" required aria-label="할 일 수정"><input type="text" name="m" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="14:30" value="'+(t.time||'')+'" aria-label="시간 수정"><button>저장</button><button type="button" data-tecancel="1">취소</button></form>':ck('data-t="'+t.id+'"',t.done)+'<span class="t">'+esc(t.title)+'</span>'+(t.time?'<small>'+t.time+'</small>':'')+(showDate&&t.date?'<small>'+(+t.date.slice(5,7))+'/'+(+t.date.slice(8))+'</small>':''))+'</div>';
- if(s.length)h+='<div class="subs">'+s.map(function(x){if(editing==="s:"+t.id+":"+x.id)return '<form class="sub tef sef" data-sef="'+t.id+':'+x.id+'"><input type="text" name="t" value="'+esc(x.title)+'" maxlength="80" required aria-label="세부항목 수정"><button>저장</button><button type="button" data-tecancel="1">취소</button></form>';return '<div class="sub'+(x.done?' done':'')+'">'+ck('data-ts="'+t.id+':'+x.id+'"',x.done,1)+'<span class="t">'+esc(x.title)+'</span><button type="button" class="ed" data-se="'+t.id+':'+x.id+'" aria-label="세부항목 수정">수정</button><button type="button" class="x" data-ds="'+t.id+':'+x.id+'" aria-label="세부항목 삭제">✕</button></div>'}).join('')+'</div>';
+ if(s.length)h+='<div class="subs">'+s.map(function(x){if(editing==="s:"+t.id+":"+x.id)return '<form class="sub tef sef" data-sef="'+t.id+':'+x.id+'"><input type="text" name="t" value="'+esc(x.title)+'" maxlength="80" required aria-label="세부항목 수정"><button>저장</button><button type="button" data-tecancel="1">취소</button></form>';return '<div class="sub'+(x.done?' done':'')+'" data-sid="'+t.id+':'+x.id+'">'+ck('data-ts="'+t.id+':'+x.id+'"',x.done,1)+'<span class="t">'+esc(x.title)+'</span><button type="button" class="ed" data-se="'+t.id+':'+x.id+'" aria-label="세부항목 수정">수정</button><button type="button" class="x" data-ds="'+t.id+':'+x.id+'" aria-label="세부항목 삭제">✕</button></div>'}).join('')+'</div>';
  if(addingSub==t.id)h+='<form class="subf" data-sf="'+t.id+'"><input type="text" placeholder="세부항목 (예: 경제발전론)" required aria-label="세부항목"><button>추가</button></form>';
  if(resched==t.id&&!t.done)h+='<div class="rsf"><input type="date" data-rd="'+t.id+'" value="'+(t.date||'')+'" aria-label="새 날짜"><button type="button" data-tm="'+t.id+'">내일로</button></div>';
  return h+'<div class="acts"><button type="button" data-sub="'+t.id+'">+ 세부항목</button><button type="button" data-te="'+t.id+'">수정</button><button type="button" class="rs" data-r="'+t.id+'"'+(t.done?' disabled':'')+'>날짜 변경</button><button type="button" data-d="'+t.id+'">삭제</button></div></div>';
@@ -1551,7 +1551,6 @@ document.addEventListener("click",function(e){
  if(x=q("data-ds")){var a=subOf(x.dataset.ds);a.t.subs=(a.t.subs||[]).filter(function(s){return s.id!=a.id});sync(a.t);save();render();return}
  if(x=q("data-ts")){var b=subOf(x.dataset.ts);(b.t.subs||[]).forEach(function(s){if(s.id==b.id)s.done=!s.done});var sd=(b.t.subs||[]).some(function(s){return s.id==b.id&&s.done});sync(b.t);save();render();if(sd)roomWalk();return}
  if(x=q("data-t")){toggle(x.dataset.t);return}
- if(x=q("data-c")){toggle(x.dataset.c);return}
  if(x=q("data-up")){move(x.dataset.up,-1);return}
  if(x=q("data-dn")){move(x.dataset.dn,1);return}
  if(x=q("data-mv")){setDate(x.dataset.mv,sel);return}
@@ -1592,7 +1591,7 @@ function rdClear(){[].forEach.call(document.querySelectorAll(".rd-before,.rd-aft
 document.addEventListener("pointerdown",function(e){
  if(e.button>0||RD)return;var el=e.target.closest&&e.target.closest(".dz .task[data-tid],#inlist .in[data-id]");if(!el)return;
  if(el.classList.contains("in")&&e.pointerType!=="touch")return;
- if(e.target.closest("button,input,form,select,textarea,a,label,.ck"))return;
+ if(e.target.closest("button,input,form,select,textarea,a,label,.ck,.sub"))return;
  var x0=e.clientX,y0=e.clientY,sy0=window.scrollY,st={el:el,on:false,tm:0,dy:0,tg:null,af:false,pid:e.pointerId,z:null,cy:y0,cx:x0,sc:0,iv:0},und=el.classList.contains("in");RD=st;
  st.tm=setTimeout(function(){st.on=true;el.classList.add("rd-on");document.body.classList.add("rd-act");try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}if(und){st.iv=setInterval(function(){if(st.sc){window.scrollBy(0,st.sc);pos()}},16)}},380);
  function mv(ev){if(ev.pointerId!==st.pid)return;if(!st.on){if(Math.abs(ev.clientX-x0)>8||Math.abs(ev.clientY-y0)>8)end(true);return}
@@ -1607,6 +1606,26 @@ document.addEventListener("pointerdown",function(e){
  function end(cancel){clearTimeout(st.tm);clearInterval(st.iv);clearOver();document.removeEventListener("pointermove",mv);document.removeEventListener("pointerup",up);document.removeEventListener("pointercancel",cn);
   var was=st.on;el.classList.remove("rd-on");el.style.transform="";document.body.classList.remove("rd-act");rdClear();RD=null;
   if(was){RDSKIP=Date.now()+400;if(!cancel){if(st.z){var ds=st.z.dataset.wd||st.z.dataset.day||st.z.dataset.dz;if(find(rdId(el))&&ds){sel=ds;setDate(rdId(el),ds)}}else if(st.tg)rdMove(rdId(el),rdId(st.tg),st.af)}}}
+ function up(ev){if(ev.pointerId===st.pid)end(false)}function cn(ev){if(ev.pointerId===st.pid)end(true)}
+ document.addEventListener("pointermove",mv);document.addEventListener("pointerup",up);document.addEventListener("pointercancel",cn)});
+/* ---- 세부항목 꾹 눌러 순서 바꾸기 / 다른 큰 항목으로 옮기기 ---- */
+function sdMove(sid,tg,af,toRow){var a=sid.split(":"),b=tg.split(":"),st=find(a[0]),tt=find(b[0]);if(!st||!tt)return;var ss=st.subs||[],x=ss.filter(function(q){return String(q.id)===a[1]})[0];if(!x)return;
+ ss.splice(ss.indexOf(x),1);tt.subs=tt.subs||[];var k=0;
+ if(!toRow){var o=tt.subs.filter(function(q){return String(q.id)===b[1]})[0];k=o?tt.subs.indexOf(o)+(af?1:0):tt.subs.length}
+ tt.subs.splice(k,0,x);save();render()}
+document.addEventListener("pointerdown",function(e){
+ if(e.button>0||RD)return;var el=e.target.closest&&e.target.closest(".dz .sub[data-sid]");if(!el||el.classList.contains("tef"))return;
+ if(e.target.closest("button,input,form,select,textarea,a,label,.ck"))return;
+ var x0=e.clientX,y0=e.clientY,sy0=window.scrollY,st={el:el,on:false,tm:0,tg:null,af:false,row:false,pid:e.pointerId};RD=st;
+ st.tm=setTimeout(function(){st.on=true;el.classList.add("rd-on");document.body.classList.add("rd-act");try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}},380);
+ function mv(ev){if(ev.pointerId!==st.pid)return;if(!st.on){if(Math.abs(ev.clientX-x0)>8||Math.abs(ev.clientY-y0)>8)end(true);return}
+  el.style.transform="translateY("+(ev.clientY-y0+(window.scrollY-sy0))+"px)";
+  var r=el.getBoundingClientRect(),cy=r.top+r.height/2,best=null,bd=1e9,bRow=false;rdClear();
+  [].forEach.call(document.querySelectorAll(".dz .sub[data-sid]:not(.tef),.dz .task>.row"),function(n){if(n===el)return;var isRow=n.classList.contains("row"),q=n.getBoundingClientRect(),d=Math.abs(q.top+q.height/2-cy);if(d<bd){bd=d;best=n;bRow=isRow}});
+  st.tg=best;st.row=bRow;if(best){var q=best.getBoundingClientRect();st.af=bRow?true:cy>q.top+q.height/2;best.classList.add(st.af?"rd-after":"rd-before")}}
+ function end(cancel){clearTimeout(st.tm);document.removeEventListener("pointermove",mv);document.removeEventListener("pointerup",up);document.removeEventListener("pointercancel",cn);
+  var was=st.on;el.classList.remove("rd-on");el.style.transform="";document.body.classList.remove("rd-act");rdClear();RD=null;
+  if(was){RDSKIP=Date.now()+400;if(!cancel&&st.tg){var sid=el.getAttribute("data-sid");if(st.row)sdMove(sid,st.tg.parentNode.getAttribute("data-tid")+":",true,true);else sdMove(sid,st.tg.getAttribute("data-sid"),st.af,false)}}}
  function up(ev){if(ev.pointerId===st.pid)end(false)}function cn(ev){if(ev.pointerId===st.pid)end(true)}
  document.addEventListener("pointermove",mv);document.addEventListener("pointerup",up);document.addEventListener("pointercancel",cn)});
 document.addEventListener("touchmove",function(e){if(RD&&RD.on)e.preventDefault()},{passive:false});
